@@ -23,7 +23,7 @@ namespace IssueColl
             configLoader.setFilenames(args[0], args[1]);
             config = configLoader.loadWorkflowFromFile();
 
-            report = issueStatusTimesReportBuilder.buildReport();
+            report = issueStatusTimesReportBuilder.buildReport(config);
 
 
             fileExporter.exportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");

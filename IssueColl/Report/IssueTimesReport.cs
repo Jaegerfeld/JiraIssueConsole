@@ -6,7 +6,7 @@ namespace IssueColl.Report
 {
     class IssueTimesReport
     {
-        public string toString() 
+        public override string ToString() 
         {
             string returnString = "";
 

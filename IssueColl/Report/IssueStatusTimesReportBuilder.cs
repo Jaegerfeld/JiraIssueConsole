@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IssueColl.Setup;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,13 +9,22 @@ namespace IssueColl.Report
     {
 
         IssueTimesReport report;
+        Config config;
 
-        
-        
-        
-        internal IssueTimesReport buildReport()
+        internal Config Config { get => config; set => config = value; }
+        internal IssueTimesReport Report { get => report; set => report = value; }
+
+        internal IssueTimesReport buildReport( Config config)
         {
-            throw new NotImplementedException();
+            this.Config = config;
+            IssueTimesReport report = new IssueTimesReport();
+
+
+
+
+
+
+            return report;
         }
     }
 }

@@ -39,7 +39,7 @@
 //            string pw = PasswordBox_pw.Password;
 //            string url = TextBox_Server_URL.Text;
 
-//            var jira = Jira.CreateRestClient(url,usr,pw);
+//            var jira = Jira.CreateRestClient(url, usr, pw);
 
 //            Console.WriteLine(jira.ToString());
 
@@ -61,17 +61,17 @@
 //            int counter = 0; // Verlaufsbalken Zähler
 //            int startAt = 0; // Paginierter Abruf bei Jira (immer 20 Items), startpunkt
 //            int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
-            
+
 //            var issues = await jira.Issues.GetIssuesFromJqlAsync(jqlLine);
 
 //            issuesCount = issues.TotalItems + 30; //zur sicherheit :-)
 //            startAt += 20;
-           
-//            while (startAt < issuesCount) 
+
+//            while (startAt < issuesCount)
 //            {
 //                issues = await jira.Issues.GetIssuesFromJqlAsync(jqlLine, startAt);
 //                startAt += 20;
-//            }  
+//            }
 
 //            ProgressBar_Historie.Value = 100 / issues.Count() * counter;
 
@@ -102,7 +102,7 @@
 //                        if (item.FieldName.Equals("status"))
 //                        {
 //                            dict[item.ToValue] = log.CreatedDate.ToShortDateString();
-  
+
 //                        }
 //                    }
 //                }
@@ -148,13 +148,13 @@
 //            string workflowPath = TextBlock_WorkflowFilePath.Text;
 //            string jsonpath = TextBlock_FilePathJson.Text;
 //            DateTime timestamp = (DateTime)DatePicker_DateOfFile.SelectedDate;
-            
+
 //            builder.buildCFDDataFile(workflowPath, jsonpath, timestamp);
 
 //        }
-        
-        
-        
+
+
+
 //        /* Aufbau einer Tabelle: pro gefundenem Issue aufsummiert alle Zeiten pro Status in Minuten.
 //        e.g.   To Do  | In Progress | In Test
 //               500    |   876       |  456
@@ -186,19 +186,19 @@
 //                csvFileContent = "";
 
 //                csvFileContent += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
-                                
-//               List<WorkflowStep> statuses = wfex.getWorkflowFromFile(TextBlock_WorkflowFilePath.Text);
+
+//                List<WorkflowStep> statuses = wfex.getWorkflowFromFile(TextBlock_WorkflowFilePath.Text);
 
 //                List<string> doneStatesList = new List<string>();
 
 //                // 
 //                foreach (WorkflowStep status in statuses)
-//                {              
-//                        csvFileContent += status.Name + ",";
+//                {
+//                    csvFileContent += status.Name + ",";
 //                    if (status.DoneState)
 //                    {
 //                        doneStatesList.Add(status.Name);
-//                    }        
+//                    }
 //                }
 
 //                csvFileContent += "First Date,Closed Date";
@@ -207,7 +207,7 @@
 
 //                // baue dictionary mit status/zeitpaaren
 //                issuesCount = JsonContent.issues.Count;
-                
+
 //                foreach (IssuePOCO issue in JsonContent.issues)
 //                {
 //                    String resultLine = "";
@@ -219,13 +219,13 @@
 
 //                    resultLine += group + "," + issue.key + "," + issue.fields.issuetype.name + "," + issue.fields.status.name + "," + issue.fields.created.ToString() + ",";
 
-//                    if(issue.fields.components != null)
+//                    if (issue.fields.components != null)
 //                    {
 //                        foreach (IssueComponentsItemPOCO item in issue.fields.components)
 //                        {
 //                            resultLine += item.name + "|";
 //                        }
-                        
+
 //                    }
 //                    resultLine += ",";
 
@@ -237,20 +237,20 @@
 
 
 //                    Dictionary<string, int> dict = new Dictionary<string, int>();
-//                    foreach(WorkflowStep status in statuses)
+//                    foreach (WorkflowStep status in statuses)
 //                    {
 //                        dict[status.Name] = 0;
 //                        if (status.Last)
 //                        {
-//                             lastName = status.Name;
+//                            lastName = status.Name;
 //                        }
 //                        if (status.First)
 //                        {
-//                             firstName = status.Name;
+//                            firstName = status.Name;
 //                        }
 //                    }
 
-//                    List<StatusRich> statusRichList = new List<StatusRich>();               
+//                    List<StatusRich> statusRichList = new List<StatusRich>();
 
 //                    foreach (IssueHistoryPOCO history in issue.changelog.histories)
 //                    {
@@ -272,12 +272,12 @@
 //                    DateTime currentDate = (DateTime)DatePicker_DateOfFile.SelectedDate;
 //                    // kein Statuswechsel in History ==> immer noch im initialen Status
 //                    if (statusRichList.Count < 1)
-//                    {                                                
+//                    {
 //                        //DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
-                       
+
 //                        TimeSpan ts = currentDate - issue.fields.created;
 //                        int minutes = (int)ts.TotalMinutes;
-                                               
+
 //                        resultLine += minutes + ",,,,,,,,";
 //                    }
 //                    // sonst Status gefunden, wenn  nicht: immer noch open
@@ -298,18 +298,18 @@
 //                        }
 
 //                        // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
-//                        last = currentDate ;
+//                        last = currentDate;
 //                        // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
 //                        foreach (StatusRich statusTrans in statusRichList)
-//                        {                           
-//                            TimeSpan ts = last - statusTrans.TimeStamp ;
+//                        {
+//                            TimeSpan ts = last - statusTrans.TimeStamp;
 //                            statusTrans.Minutes = (int)ts.TotalMinutes;
 //                            last = statusTrans.TimeStamp;
 //                            string statusName = "";
 //                            if (!(dict.ContainsKey(statusTrans.Name)))
 //                            {
 //                                statusName = statusTrans.Name;
-//                                foreach(WorkflowStep step in statuses)
+//                                foreach (WorkflowStep step in statuses)
 //                                {
 //                                    if (step.Aliases.Contains(statusTrans.Name))
 //                                    {
@@ -335,19 +335,19 @@
 //                                }
 //                            }
 //                            dict[statusName] += statusTrans.Minutes;
-                            
+
 //                        }
 //                        foreach (KeyValuePair<string, int> pair in dict)
 //                        {
 //                            resultLine += pair.Value + ",";
 //                        }
 //                    }
-                                                  
-                    
 
-//                    if (FirstDate.Equals(new DateTime()))                     
-//                    {                     
-//                            resultLine += ",";
+
+
+//                    if (FirstDate.Equals(new DateTime()))
+//                    {
+//                        resultLine += ",";
 //                    }
 //                    else
 //                    {
@@ -364,24 +364,24 @@
 //                    }
 //                    else
 //                    {
-//                        resultLine += CloseDate.ToString() ; 
+//                        resultLine += CloseDate.ToString();
 //                    }
-                   
+
 //                    csvFileContent += resultLine + System.Environment.NewLine;
-                    
+
 //                    Console.WriteLine(resultLine);
 //                    counter++;
 //                    ProgressBar_Historie.Value = 100 / issuesCount * counter;
 //                }
 
 //            }
-            
+
 //            TextBox_Errors.Text += "\n<< additional Statuses found >> \n";
 //            foreach (String s in notFoundStep)
-//            {                
+//            {
 //                TextBox_Errors.Text += s + " \n";
 //            }
-            
+
 //            File.WriteAllText(TextBlock_Filepath.Text, csvFileContent);
 //        }
 
@@ -395,10 +395,10 @@
 //            openFileDialog.Filter = "json File (*.json|*.json|All files (*.*)|*.*";
 //            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 //            if (openFileDialog.ShowDialog() == true)
-//                    TextBlock_FilePathJson.Text = openFileDialog.FileName;
+//                TextBlock_FilePathJson.Text = openFileDialog.FileName;
 //        }
 
-//             private void Button_workflowHistory_Click(object sender, RoutedEventArgs e)
+//        private void Button_workflowHistory_Click(object sender, RoutedEventArgs e)
 //        {
 
 //        }
