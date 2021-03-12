@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Atlassian.Jira;
+﻿using Atlassian.Jira;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace Jiracoll
 {
     public class OwnIssue : IJiraEntity
     {
-        public OwnIssue() {}
+        public OwnIssue() { }
 
         [JsonProperty("id")]
         public string Self { get; }

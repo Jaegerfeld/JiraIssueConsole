@@ -1,12 +1,9 @@
 ﻿using Atlassian.Jira;
+using Jiracoll.POCOS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jiracoll.POCOS;
 
 namespace Jiracoll.ReportBuilder
 {
@@ -15,9 +12,10 @@ namespace Jiracoll.ReportBuilder
         public CFDDataFileBuilder() { }
 
 
-        public void buildCFDDataFile(string workflowPath, string jsonPath, DateTime timeStamp) {
+        public void buildCFDDataFile(string workflowPath, string jsonPath, DateTime timeStamp)
+        {
             {
-                String jsonString ="";
+                String jsonString = "";
                 String csvFileContent = "";
 
                 WorkflowExtraxtor wfex = new WorkflowExtraxtor();
@@ -26,7 +24,7 @@ namespace Jiracoll.ReportBuilder
                 //int issuesCount; // wieviele Issues insgesamt issuecount/20 == anzahl abrufe notwendig
 
                 IssueChangeLog issueChangelog = new IssueChangeLog();
-                
+
                 // get json & deserialize
 
                 jsonString = File.ReadAllText(jsonPath);
@@ -65,7 +63,7 @@ namespace Jiracoll.ReportBuilder
                     }
                 }
 
-            String resultLine = "";
+                String resultLine = "";
 
 
 
@@ -109,5 +107,5 @@ namespace Jiracoll.ReportBuilder
 
 
         }
-        }
+    }
 }

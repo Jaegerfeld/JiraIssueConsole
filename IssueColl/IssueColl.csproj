@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <Folder Include="ALT\" />
-    <Folder Include="POCO\" />
+    <Folder Include="ALT\POCOS\" />
   </ItemGroup>
 
 </Project>

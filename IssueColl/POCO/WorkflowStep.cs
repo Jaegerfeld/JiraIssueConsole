@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jiracoll
 {
@@ -23,7 +20,7 @@ namespace Jiracoll
         {
             this.name = name;
             this.mapTarget = mapTarget;
-            this.aliases = new List<string>();   
+            this.aliases = new List<string>();
         }
 
         public string Name { get => name; set => name = value; }

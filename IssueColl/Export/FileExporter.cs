@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IssueColl.Export
+﻿namespace IssueColl.Export
 {
     class FileExporter
     {

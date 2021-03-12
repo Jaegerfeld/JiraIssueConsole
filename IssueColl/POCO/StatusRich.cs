@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jiracoll
 {
@@ -17,7 +13,7 @@ namespace Jiracoll
         public DateTime TimeStamp { get => timeStamp; set => timeStamp = value; }
 
         public StatusRich() { }
-        public StatusRich( string name, DateTime transformationDate)
+        public StatusRich(string name, DateTime transformationDate)
         {
             this.name = name;
             this.timeStamp = transformationDate;

@@ -1,8 +1,5 @@
 ﻿using Jiracoll;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace IssueColl.Setup
 {
@@ -15,7 +12,7 @@ namespace IssueColl.Setup
 
         public Config loadWorkflowFromFile()
         {
-            
+
             string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "workflow.txt";
 
             this.config.Workflow = extractor.getWorkflowFromFile(path);
@@ -23,7 +20,7 @@ namespace IssueColl.Setup
             return this.config;
         }
 
-       public void setFilenames(string jsonFilename, string exportFilename)
+        public void setFilenames(string jsonFilename, string exportFilename)
         {
             this.config.JsonFileName = jsonFilename;
             this.config.ExportFileName = exportFilename;
