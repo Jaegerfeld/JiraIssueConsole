@@ -224,142 +224,142 @@
 ////    resultLine += ",";
 
 
-//    Dictionary<string, int> dict = new Dictionary<string, int>();
-//    foreach (WorkflowStep status in statuses)
+//Dictionary<string, int> dict = new Dictionary<string, int>();
+//foreach (WorkflowStep status in statuses)
+//{
+//    dict[status.Name] = 0;
+//    if (status.Last)
 //    {
-//        dict[status.Name] = 0;
-//        if (status.Last)
+//        lastName = status.Name;
+//    }
+//    if (status.First)
+//    {
+//        firstName = status.Name;
+//    }
+//}
+
+//List<StatusRich> statusRichList = new List<StatusRich>();
+
+//foreach (IssueHistoryPOCO history in issue.changelog.histories)
+//{
+//    foreach (IssueChangeLogItem item in history.items)
+//    {
+//        if (item.FieldName.Equals("status"))
 //        {
-//            lastName = status.Name;
-//        }
-//        if (status.First)
-//        {
-//            firstName = status.Name;
+//            StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
+
+//            statusRichList.Add(statusTransformation);
 //        }
 //    }
+//}
+//DateTime CloseDate = new DateTime();
+//DateTime FirstDate = new DateTime();
+//DateTime DoneDate = new DateTime();
+//// umsortieren letzter zuerst, desc
+//statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
+//DateTime currentDate = (DateTime)DatePicker_DateOfFile.SelectedDate;
+//// kein Statuswechsel in History ==> immer noch im initialen Status
+//if (statusRichList.Count < 1)
+//{
+//    //DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
 
-//    List<StatusRich> statusRichList = new List<StatusRich>();
+//    TimeSpan ts = currentDate - issue.fields.created;
+//    int minutes = (int)ts.TotalMinutes;
 
-//    foreach (IssueHistoryPOCO history in issue.changelog.histories)
+//    resultLine += minutes + ",,,,,,,,";
+//}
+//// sonst Status gefunden, wenn  nicht: immer noch open
+//else
+//{
+//    DateTime last;
+
+//    // wenn es einen Donestatus gibt ist der letzte das Ende Date
+//    //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+//    if (statusRichList.Any(p => p.Name.Equals(lastName)))
 //    {
-//        foreach (IssueChangeLogItem item in history.items)
+//        CloseDate = statusRichList.Max(obj => obj.TimeStamp);
+//    }
+
+//    if (statusRichList.Any(p => p.Name.Equals(firstName)))
+//    {
+//        FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+//    }
+
+//    // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
+//    last = currentDate;
+//    // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
+//    foreach (StatusRich statusTrans in statusRichList)
+//    {
+//        TimeSpan ts = last - statusTrans.TimeStamp;
+//        statusTrans.Minutes = (int)ts.TotalMinutes;
+//        last = statusTrans.TimeStamp;
+//        string statusName = "";
+//        if (!(dict.ContainsKey(statusTrans.Name)))
 //        {
-//            if (item.FieldName.Equals("status"))
+//            statusName = statusTrans.Name;
+//            foreach (WorkflowStep step in statuses)
 //            {
-//                StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
-
-//                statusRichList.Add(statusTransformation);
-//            }
-//        }
-//    }
-//    DateTime CloseDate = new DateTime();
-//    DateTime FirstDate = new DateTime();
-//    DateTime DoneDate = new DateTime();
-//    // umsortieren letzter zuerst, desc
-//    statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
-//    DateTime currentDate = (DateTime)DatePicker_DateOfFile.SelectedDate;
-//    // kein Statuswechsel in History ==> immer noch im initialen Status
-//    if (statusRichList.Count < 1)
-//    {
-//        //DateTime currentDate = new DateTime(2020, 12, 17, 12, 29, 00);
-
-//        TimeSpan ts = currentDate - issue.fields.created;
-//        int minutes = (int)ts.TotalMinutes;
-
-//        resultLine += minutes + ",,,,,,,,";
-//    }
-//    // sonst Status gefunden, wenn  nicht: immer noch open
-//    else
-//    {
-//        DateTime last;
-
-//        // wenn es einen Donestatus gibt ist der letzte das Ende Date
-//        //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-//        if (statusRichList.Any(p => p.Name.Equals(lastName)))
-//        {
-//            CloseDate = statusRichList.Max(obj => obj.TimeStamp);
-//        }
-
-//        if (statusRichList.Any(p => p.Name.Equals(firstName)))
-//        {
-//            FirstDate = statusRichList.Min(obj => obj.TimeStamp);
-//        }
-
-//        // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
-//        last = currentDate;
-//        // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
-//        foreach (StatusRich statusTrans in statusRichList)
-//        {
-//            TimeSpan ts = last - statusTrans.TimeStamp;
-//            statusTrans.Minutes = (int)ts.TotalMinutes;
-//            last = statusTrans.TimeStamp;
-//            string statusName = "";
-//            if (!(dict.ContainsKey(statusTrans.Name)))
-//            {
-//                statusName = statusTrans.Name;
-//                foreach (WorkflowStep step in statuses)
+//                if (step.Aliases.Contains(statusTrans.Name))
 //                {
-//                    if (step.Aliases.Contains(statusTrans.Name))
-//                    {
-//                        statusName = step.Name;
-//                    }
+//                    statusName = step.Name;
 //                }
 //            }
-//            else
-//            {
-//                statusName = statusTrans.Name;
-//            }
-//            if (doneStatesList.Contains(statusName))
-//            {
-//                DoneDate = statusTrans.TimeStamp;
-//                foundDate = true;
-//            }
-//            if (!dict.ContainsKey(statusName))
-//            {
-//                dict.Add(statusName, 0);
-//                if (!notFoundStep.Contains(statusName))
-//                {
-//                    notFoundStep.Add(statusName);
-//                }
-//            }
-//            dict[statusName] += statusTrans.Minutes;
-
 //        }
-//        foreach (KeyValuePair<string, int> pair in dict)
+//        else
 //        {
-//            resultLine += pair.Value + ",";
+//            statusName = statusTrans.Name;
 //        }
-//    }
-
-
-
-//    if (FirstDate.Equals(new DateTime()))
-//    {
-//        resultLine += ",";
-//    }
-//    else
-//    {
-//        resultLine += FirstDate.ToString() + ",";
-//    }
-
-//    if (CloseDate.Equals(new DateTime()))
-//    {
-//        if (foundDate)
+//        if (doneStatesList.Contains(statusName))
 //        {
-//            resultLine += DoneDate.ToString() + ",";
+//            DoneDate = statusTrans.TimeStamp;
+//            foundDate = true;
 //        }
-//        /*resultLine += ",";*/
+//        if (!dict.ContainsKey(statusName))
+//        {
+//            dict.Add(statusName, 0);
+//            if (!notFoundStep.Contains(statusName))
+//            {
+//                notFoundStep.Add(statusName);
+//            }
+//        }
+//        dict[statusName] += statusTrans.Minutes;
+
 //    }
-//    else
+//    foreach (KeyValuePair<string, int> pair in dict)
 //    {
-//        resultLine += CloseDate.ToString();
+//        resultLine += pair.Value + ",";
 //    }
+//}
 
-//    csvFileContent += resultLine + System.Environment.NewLine;
 
-//    Console.WriteLine(resultLine);
-//    counter++;
-//    ProgressBar_Historie.Value = 100 / issuesCount * counter;
+
+//if (FirstDate.Equals(new DateTime()))
+//{
+//    resultLine += ",";
+//}
+//else
+//{
+//    resultLine += FirstDate.ToString() + ",";
+//}
+
+//if (CloseDate.Equals(new DateTime()))
+//{
+//    if (foundDate)
+//    {
+//        resultLine += DoneDate.ToString() + ",";
+//    }
+//    /*resultLine += ",";*/
+//}
+//else
+//{
+//    resultLine += CloseDate.ToString();
+//}
+
+//csvFileContent += resultLine + System.Environment.NewLine;
+
+//Console.WriteLine(resultLine);
+//counter++;
+//ProgressBar_Historie.Value = 100 / issuesCount * counter;
 //}
 
 //            }

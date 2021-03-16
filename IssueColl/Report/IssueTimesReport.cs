@@ -23,9 +23,13 @@ namespace IssueColl.Report
         {
             string returnString = "";
 
-
-
-
+            returnString += this.headerLine + " \n";
+            
+            foreach( IssueTimesReportLine line in this.issueLines)
+            {
+                returnString += line.ToString() +" \n";
+            }
+            
             return returnString;
         }
 

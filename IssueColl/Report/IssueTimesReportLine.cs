@@ -18,7 +18,8 @@ namespace IssueColl.Report
         string firstDate;
         string closedDate;
         bool idleIssue = false;
-        int idletime = 0; 
+        int idletime = 0;
+        List<WorkflowStep> workflow;
 
         public string Group { get => group; set => group = value; }
         public string Key { get => key; set => key = value; }
@@ -57,8 +58,38 @@ namespace IssueColl.Report
         public override string ToString()
         {
             string returnstring = "";
+            string sep = ",";
+
+            returnstring += this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep + this.resolution + sep;
 
 
+            foreach (KeyValuePair<string, int> pair in this.statusTimes)
+            {
+                returnstring += pair.Value + ",";
+            }
+
+            if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
+            {
+                returnstring += ",";
+            }
+            else
+            {
+                returnstring += FirstDate.ToString() + ",";
+            }
+
+            //if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
+            //{
+            //    if (idleIssue)
+            //    {
+            //        returnstring += this.ClosedDate.ToString() + ",";
+            //    }
+            //}
+            //else
+            //{
+            //    returnstring += this.ClosedDate.ToString();
+            //}
+
+            //returnstring += System.Environment.NewLine;
 
             return returnstring;
         }
