@@ -79,8 +79,8 @@ namespace IssueColl.Report
             
             string lastName = "";
             string firstName = "";            
-            bool foundDate = false;
-            List<String> notFoundStep = new List<String>();
+            //bool foundDate = false;
+            //List<String> notFoundStep = new List<String>();
 
             //Basisc load, without logic total clear data
             IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow);
@@ -129,9 +129,9 @@ namespace IssueColl.Report
                 }
             }
 
-            DateTime CloseDate = new DateTime();
-            DateTime FirstDate = new DateTime();
-            DateTime DoneDate = new DateTime();
+            //DateTime CloseDate = new DateTime();
+            //DateTime FirstDate = new DateTime();
+            //DateTime DoneDate = new DateTime();
 
             // umsortieren letzter zuerst, desc
             statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
@@ -157,24 +157,24 @@ namespace IssueColl.Report
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
-                    CloseDate = statusRichList.Max(obj => obj.TimeStamp);
+                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
                 }
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
-                    FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
 
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
-                    CloseDate = statusRichList.Max(obj => obj.TimeStamp);
+                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
                 }
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
-                    FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
@@ -203,15 +203,15 @@ namespace IssueColl.Report
                     }
                     if (doneStatesList.Contains(statusName))
                     {
-                        DoneDate = statusTrans.TimeStamp;
-                        foundDate = true;
+                        resultLine.DoneDate = statusTrans.TimeStamp;
+                        resultLine.FoundDate  = true;
                     }
                     if (!dict.ContainsKey(statusName))
                     {
                         dict.Add(statusName, 0);
-                        if (!notFoundStep.Contains(statusName))
+                        if (!resultLine.NotFoundStep.Contains(statusName))
                         {
-                            notFoundStep.Add(statusName);
+                            resultLine.NotFoundStep.Add(statusName);
                         }
                     }
                     dict[statusName] += statusTrans.Minutes;

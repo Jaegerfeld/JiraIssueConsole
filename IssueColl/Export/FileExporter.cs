@@ -11,7 +11,7 @@ namespace IssueColl.Export
         public void exportToFile(string exportString, string Filename)
         {
 
-            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + Filename + "_IssueTimes.csv";
+            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + Filename + ".csv";
             Console.WriteLine("File exported");
             File.WriteAllText(path, exportString);
         }
