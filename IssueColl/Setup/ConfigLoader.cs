@@ -10,10 +10,11 @@ namespace IssueColl.Setup
 
 
 
-        public Config loadWorkflowFromFile()
+        public Config loadWorkflowFromFile(string filename)
         {
 
-            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "workflow.txt";
+
+            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + filename;
 
             this.config.Workflow = extractor.getWorkflowFromFile(path);
 
