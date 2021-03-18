@@ -55,7 +55,7 @@ namespace IssueColl.Report
 
             List<WorkflowStep> statuses = config.Workflow;
             // find the donestate from the config file and mark it
-           
+
 
             // adding the given statuses from the config file to the header
             foreach (WorkflowStep status in statuses)
@@ -76,9 +76,9 @@ namespace IssueColl.Report
 
         private IssueTimesReportLine buildLine(IssuePOCO issue)
         {
-            
+
             string lastName = "";
-            string firstName = "";            
+            string firstName = "";
             //bool foundDate = false;
             //List<String> notFoundStep = new List<String>();
 
@@ -204,7 +204,7 @@ namespace IssueColl.Report
                     if (doneStatesList.Contains(statusName))
                     {
                         resultLine.DoneDate = statusTrans.TimeStamp;
-                        resultLine.FoundDate  = true;
+                        resultLine.FoundDate = true;
                     }
                     if (!dict.ContainsKey(statusName))
                     {
@@ -225,8 +225,8 @@ namespace IssueColl.Report
             }
 
 
-                return resultLine;
+            return resultLine;
         }
     }
-       
+
 }

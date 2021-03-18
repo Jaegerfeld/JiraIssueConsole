@@ -1,6 +1,4 @@
-﻿using Jiracoll;
-using System.Collections.Generic;
-using Jiracoll.POCOS;
+﻿using System.Collections.Generic;
 
 namespace IssueColl.Report
 {
@@ -9,11 +7,11 @@ namespace IssueColl.Report
 
         string headerLine = "";
         List<IssueTimesReportLine> issueLines = new List<IssueTimesReportLine>();
-      
+
 
         public IssueTimesReport()
         {
-           
+
         }
 
         public string HeaderLine { get => headerLine; set => headerLine = value; }
@@ -24,12 +22,12 @@ namespace IssueColl.Report
             string returnString = "";
 
             returnString += this.headerLine + " \n";
-            
-            foreach( IssueTimesReportLine line in this.issueLines)
+
+            foreach (IssueTimesReportLine line in this.issueLines)
             {
-                returnString += line.ToString() +" \n";
+                returnString += line.ToString() + " \n";
             }
-            
+
             return returnString;
         }
 

@@ -15,13 +15,13 @@ namespace IssueColl.Report
         DateTime createdDate;
         List<string> component;
         string resolution;
-        Dictionary<string,int> statusTimes;
+        Dictionary<string, int> statusTimes;
         DateTime firstDate;
         DateTime closedDate;
         DateTime doneDate;
         bool idleIssue = false;
         int idletime = 0;
-        List<WorkflowStep> workflow;
+        //List<WorkflowStep> workflow;
         bool foundDate = false;
         List<String> notFoundStep = new List<String>();
 
@@ -56,7 +56,7 @@ namespace IssueColl.Report
             this.component = new List<string>();
             this.statusTimes = new Dictionary<string, int>();
 
-            foreach(WorkflowStep step in workflow)
+            foreach (WorkflowStep step in workflow)
             {
                 this.statusTimes.Add(step.Name, 0);
             }
@@ -69,10 +69,10 @@ namespace IssueColl.Report
             string sep = ",";
 
             returnstring += this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep;
-            
-            foreach(string item in this.component)
+
+            foreach (string item in this.component)
             {
-                returnstring += item + "|" ;
+                returnstring += item + "|";
             }
             returnstring += sep + this.resolution + sep;
 

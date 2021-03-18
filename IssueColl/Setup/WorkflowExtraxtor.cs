@@ -32,7 +32,7 @@ namespace Jiracoll
             int counter = 0;
             string line;
             //string path = Directory.GetCurrentDirectory();
-            // string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
+            //string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
 
             string path = pathOfWorkflow;
 
@@ -79,15 +79,12 @@ namespace Jiracoll
                             status.Aliases.Add(statusArray[i].Trim());
                         }
                         returnList.Add(status);
-
                     }
                     else
                     {
                         returnList.Add(new WorkflowStep(line.Trim(), line.Trim()));
                     }
-
                 }
-
                 counter++;
             }
             Boolean ended = false;

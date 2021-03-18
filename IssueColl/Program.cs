@@ -20,24 +20,24 @@ namespace IssueColl
                 Console.WriteLine("\nSyntax: IssueColl [JsonFilename] [Exportfilename] [-w WorkflowFileName]\n\n" +
                                   "Options -w    Filename of the  Workflowconfig.  Default: workflow.txt \n"
                     );
-            }            
-            else 
+            }
+            else
 
-            { 
-            Config config = new Config();
-            IssueTimesReport report;
-            string workflowname = "workflowname.txt";
+            {
+                 
+                IssueTimesReport report;
+                string workflowname = "workflowname.txt";
                 if (args.Length == 3)
                 {
                     workflowname = args[2];
                 }
 
-            configLoader.setFilenames(args[0], args[1]);
-            config = configLoader.loadWorkflowFromFile(workflowname);
+                configLoader.setFilenames(args[0], args[1]);
+                Config config = configLoader.loadWorkflowFromFile(workflowname);
 
-            report = issueStatusTimesReportBuilder.buildReport(config);
+                report = issueStatusTimesReportBuilder.buildReport(config);
 
-            fileExporter.exportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");
 
             }
 
