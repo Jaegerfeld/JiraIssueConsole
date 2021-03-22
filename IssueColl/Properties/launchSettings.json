@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "\"TheApp Februar08 2021  w resolutions.json\" test"
+      "commandLineArgs": "PA.json test workflowStudi.txt"
     }
   }
 }

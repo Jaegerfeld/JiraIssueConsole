@@ -75,21 +75,27 @@ namespace IssueColl.Report
                 returnstring += item + "|";
             }
             returnstring += sep + this.resolution + sep;
-
-
-            foreach (KeyValuePair<string, int> pair in this.statusTimes)
+            if (this.idleIssue)
             {
-                returnstring += pair.Value + ",";
-            }
-
-            if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
-            {
-                returnstring += ",";
+                returnstring += this.idletime + sep; 
             }
             else
             {
-                returnstring += FirstDate.ToString() + ",";
+                foreach (KeyValuePair<string, int> pair in this.statusTimes)
+                {
+                    returnstring += pair.Value + ",";
+                }
+
+                if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
+                {
+                    returnstring += ",";
+                }
+                else
+                {
+                    returnstring += FirstDate.ToString() + ",";
+                }
             }
+            
 
             //if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
             //{

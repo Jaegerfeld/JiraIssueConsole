@@ -15,6 +15,7 @@ namespace IssueColl.Report
         IssueTimesReport report;
         Config config;
         List<string> doneStatesList = new List<string>();
+        List<String> notFoundStep = new List<String>();
 
         internal Config Config { get => config; set => config = value; }
         internal IssueTimesReport Report { get => report; set => report = value; }
@@ -41,6 +42,12 @@ namespace IssueColl.Report
                 report.IssueLines.Add(this.buildLine(issue));
             }
 
+            Console.WriteLine("Not found Steps:");
+            foreach(string step in notFoundStep)
+            {
+                Console.WriteLine(step);
+            }
+            
             return report;
         }
 
@@ -80,7 +87,7 @@ namespace IssueColl.Report
             string lastName = "";
             string firstName = "";
             //bool foundDate = false;
-            //List<String> notFoundStep = new List<String>();
+            
 
             //Basisc load, without logic total clear data
             IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow);
@@ -179,6 +186,7 @@ namespace IssueColl.Report
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
                 last = currentDate;
+                DateTime firstTrans = new DateTime();
                 // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
                 foreach (StatusRich statusTrans in statusRichList)
                 {
@@ -209,14 +217,21 @@ namespace IssueColl.Report
                     if (!dict.ContainsKey(statusName))
                     {
                         dict.Add(statusName, 0);
-                        if (!resultLine.NotFoundStep.Contains(statusName))
+                        if (!notFoundStep.Contains(statusName))
                         {
-                            resultLine.NotFoundStep.Add(statusName);
+                            notFoundStep.Add(statusName);
                         }
                     }
                     dict[statusName] += statusTrans.Minutes;
-
+                    firstTrans = statusTrans.TimeStamp;
                 }
+
+                // add time for initial Status
+                int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
+                WorkflowStep first = config.Workflow.First();
+                dict[first.Name] += firstTime;
+
+
                 foreach (KeyValuePair<string, int> pair in dict)
                 {
                     resultLine.StatusTimes[pair.Key] = pair.Value;
