@@ -7,6 +7,7 @@ namespace Jiracoll
     {
         string name;
         string mapTarget;
+        
         List<String> aliases;
         Boolean first = false;
         Boolean last = false;
@@ -33,6 +34,7 @@ namespace Jiracoll
         public bool DoneState { get => doneState; set => doneState = value; }
         public DateTime TimeStamp { get => timeStamp; set => timeStamp = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
+        
     }
 
 }

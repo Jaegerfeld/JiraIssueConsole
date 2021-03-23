@@ -17,8 +17,8 @@ namespace IssueColl
 
             if (args.Length == 0 || args[0].Equals("-h"))
             {
-                Console.WriteLine("\nSyntax: IssueColl [JsonFilename] [Exportfilename] [-w WorkflowFileName]\n\n" +
-                                  "Options -w    Filename of the  Workflowconfig.  Default: workflow.txt \n"
+                Console.WriteLine("\nSyntax: IssueColl [JsonFilename] [Exportfilename] [WorkflowFileName]\n\n" +
+                                  "Options    Filename of the  Workflowconfig.  Default: workflow.txt \n"
                     );
             }
             else

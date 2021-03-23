@@ -60,7 +60,7 @@ namespace IssueColl.Report
 
             header += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
 
-            List<WorkflowStep> statuses = config.Workflow;
+            List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
             // find the donestate from the config file and mark it
 
 
@@ -90,7 +90,7 @@ namespace IssueColl.Report
             
 
             //Basisc load, without logic total clear data
-            IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow);
+            IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow.WorkflowSteps);
 
             // there may be more than obne component
             if (issue.fields.components != null)
@@ -108,7 +108,7 @@ namespace IssueColl.Report
             }
 
             Dictionary<string, int> dict = new Dictionary<string, int>();
-            foreach (WorkflowStep status in this.config.Workflow)
+            foreach (WorkflowStep status in this.config.Workflow.WorkflowSteps)
             {
                 dict[status.Name] = 0;
                 if (status.Last)
@@ -183,6 +183,10 @@ namespace IssueColl.Report
                 {
                     resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
+                else if(statusRichList.Count <1 || config.Workflow.FirstStatus.Equals( config.Workflow.VeryFirstStep))
+                {
+                    resultLine.FirstDate = resultLine.CreatedDate;
+                }
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
                 last = currentDate;
@@ -197,7 +201,7 @@ namespace IssueColl.Report
                     if (!(dict.ContainsKey(statusTrans.Name)))
                     {
                         statusName = statusTrans.Name;
-                        foreach (WorkflowStep step in config.Workflow)
+                        foreach (WorkflowStep step in config.Workflow.WorkflowSteps)
                         {
                             if (step.Aliases.Contains(statusTrans.Name))
                             {
@@ -217,7 +221,7 @@ namespace IssueColl.Report
                     if (!dict.ContainsKey(statusName))
                     {
                         dict.Add(statusName, 0);
-                        if (!notFoundStep.Contains(statusName))
+                        if (!notFoundStep.Contains(statusName)) 
                         {
                             notFoundStep.Add(statusName);
                         }
@@ -228,7 +232,7 @@ namespace IssueColl.Report
 
                 // add time for initial Status
                 int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
-                WorkflowStep first = config.Workflow.First();
+                WorkflowStep first = config.Workflow.FirstStatus;
                 dict[first.Name] += firstTime;
 
 

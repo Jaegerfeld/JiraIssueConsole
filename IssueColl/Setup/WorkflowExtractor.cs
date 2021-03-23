@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IssueColl.POCO;
+using System;
 using System.Collections.Generic;
 
 namespace Jiracoll
@@ -13,27 +14,30 @@ namespace Jiracoll
        e.g. 
        <First>Open
        <Last>Completed*/
-    class WorkflowExtraxtor
+    class WorkflowExtractor
     {
-
+        Workflow currentWorkflow;
         //string workflowFilePath;
 
-        public WorkflowExtraxtor()
+        public WorkflowExtractor()
         {
 
         }
 
+        internal Workflow CurrentWorkflow { get => currentWorkflow; set => currentWorkflow = value; }
 
-        public List<WorkflowStep> getWorkflowFromFile(string pathOfWorkflow)
+        public Workflow getWorkflowFromFile(string pathOfWorkflow)
         {
-            List<WorkflowStep> returnList = new List<WorkflowStep>();
+            Workflow returnWorkflow = new Workflow();
+            List<WorkflowStep> steps = new List<WorkflowStep>();
 
 
             int counter = 0;
             string line;
             //string path = Directory.GetCurrentDirectory();
             //string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\workflow.txt";
-
+            bool firstStep = false;
+            WorkflowStep veryFirstStep = new WorkflowStep();
             string path = pathOfWorkflow;
 
             // Read the file and display it line by line.  
@@ -47,19 +51,27 @@ namespace Jiracoll
                 if (line.Contains("<First>"))
                 {
                     string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).First = true;
+                    WorkflowStep step = steps.Find(item => item.Name == name);
+                    (steps.Find(item => item.Name == name)).First = true;
+                    returnWorkflow.FirstStatus = step;
                 }
 
                 else if (line.Contains("<Last>"))
                 {
                     string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).Last = true;
+                    WorkflowStep step = steps.Find(item => item.Name == name);
+                    step.Last = true;
+                    returnWorkflow.LastStatus = step;
+                    
+               
                 }
 
                 else if (line.Contains("<Create>"))
                 {
                     string name = line.Split('>')[1];
-                    (returnList.Find(item => item.Name == name)).CreateState = true;
+                    WorkflowStep step = steps.Find(item => item.Name == name);
+                    (steps.Find(item => item.Name == name)).CreateState = true;
+                    returnWorkflow.VeryFirstStep = step;
                 }
 
                 else
@@ -78,18 +90,27 @@ namespace Jiracoll
                         {
                             status.Aliases.Add(statusArray[i].Trim());
                         }
-                        returnList.Add(status);
+                        steps.Add(status);
                     }
                     else
                     {
-                        returnList.Add(new WorkflowStep(line.Trim(), line.Trim()));
+                        WorkflowStep step = new WorkflowStep(line.Trim(), line.Trim());
+
+                        if(firstStep == false)
+                        {
+                            veryFirstStep = step;
+                            firstStep = true;
+                        }
+                        returnWorkflow.VeryFirstStep = veryFirstStep;
+                        steps.Add(step);
+                       
                     }
                 }
                 counter++;
             }
             Boolean ended = false;
 
-            foreach (WorkflowStep step in returnList)
+            foreach (WorkflowStep step in steps)
             {
 
                 if (step.Last)
@@ -103,8 +124,11 @@ namespace Jiracoll
             }
 
             file.Close();
+            returnWorkflow.WorkflowSteps = steps;
 
-            return returnList;
+            this.currentWorkflow = returnWorkflow;
+
+            return this.CurrentWorkflow;
         }
 
     }

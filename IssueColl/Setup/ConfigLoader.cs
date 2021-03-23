@@ -6,7 +6,7 @@ namespace IssueColl.Setup
     class ConfigLoader
     {
         Config config = new Config();
-        WorkflowExtraxtor extractor = new WorkflowExtraxtor();
+        WorkflowExtractor extractor = new WorkflowExtractor();
 
 
 
