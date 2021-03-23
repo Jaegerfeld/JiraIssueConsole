@@ -44,6 +44,8 @@ namespace Jiracoll
             System.IO.StreamReader file =
                 new System.IO.StreamReader(path);
 
+            System.Console.WriteLine("\n\nUsed Workflow: \n");
+
             while ((line = file.ReadLine()) != null)
             {
                 System.Console.WriteLine(line);
@@ -76,6 +78,7 @@ namespace Jiracoll
 
                 else
                 {
+                    WorkflowStep status;
                     if (line.Contains(":"))
                     {
                         int index = 0;
@@ -83,32 +86,34 @@ namespace Jiracoll
                         string mainStatus = statusArray[0];
 
                         // first Entry == current Status
-                        WorkflowStep status = new WorkflowStep(statusArray[0].Trim(), statusArray[0].Trim());
+                        status = new WorkflowStep(statusArray[0].Trim(), statusArray[0].Trim());
 
                         // Entry 2+ == mapped deprecated status
                         for (int i = index; i < statusArray.Length; i++)
                         {
                             status.Aliases.Add(statusArray[i].Trim());
                         }
-                        steps.Add(status);
+                        //steps.Add(status);
                     }
                     else
                     {
-                        WorkflowStep step = new WorkflowStep(line.Trim(), line.Trim());
-
-                        if(firstStep == false)
-                        {
-                            veryFirstStep = step;
-                            firstStep = true;
-                        }
-                        returnWorkflow.VeryFirstStep = veryFirstStep;
-                        steps.Add(step);
-                       
+                        status = new WorkflowStep(line.Trim(), line.Trim());
                     }
+
+                    if(firstStep == false)
+                    {
+                        veryFirstStep = status;
+                        firstStep = true;
+                    }
+                    returnWorkflow.VeryFirstStep = veryFirstStep;
+                    steps.Add(status);
+                       
+                    
                 }
                 counter++;
             }
             Boolean ended = false;
+            System.Console.WriteLine("\n\n");
 
             foreach (WorkflowStep step in steps)
             {

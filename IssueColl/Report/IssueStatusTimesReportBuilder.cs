@@ -42,7 +42,10 @@ namespace IssueColl.Report
                 report.IssueLines.Add(this.buildLine(issue));
             }
 
-            Console.WriteLine("Not found Steps:");
+            if (notFoundStep.Count > 0)
+            {
+                Console.WriteLine("********Warnings*********\nFound Steps not in Workflow File:\n");
+            }
             foreach(string step in notFoundStep)
             {
                 Console.WriteLine(step);
@@ -59,6 +62,8 @@ namespace IssueColl.Report
             string header = "";
 
             header += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
+            // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
+            header += "First Date,Closed Date,";
 
             List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
             // find the donestate from the config file and mark it
@@ -74,8 +79,7 @@ namespace IssueColl.Report
                 }
             }
 
-            // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
-            header += "First Date,Closed Date";
+           
             //header += System.Environment.NewLine; // finish header
             return header;
 
@@ -154,6 +158,10 @@ namespace IssueColl.Report
 
                 resultLine.IdleIssue = true;
                 resultLine.Idletime = minutes;
+                if(config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
+                {
+                    resultLine.FirstDate = resultLine.CreatedDate;
+                }
             }
             // sonst Status gefunden, wenn  nicht: immer noch open
             else

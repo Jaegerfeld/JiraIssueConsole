@@ -8,11 +8,11 @@ namespace IssueColl.Export
 
 
 
-        public void exportToFile(string exportString, string Filename)
+        public void exportToFile(string exportString, string filename)
         {
-
-            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + Filename + ".csv";
-            Console.WriteLine("File exported");
+            string completeFilename = filename + ".csv";
+            string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + completeFilename;
+            Console.WriteLine("****** Job done ******\n" + completeFilename + " ready");
             File.WriteAllText(path, exportString);
         }
 

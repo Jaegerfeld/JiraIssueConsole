@@ -78,14 +78,14 @@ namespace IssueColl.Report
             if (this.idleIssue)
             {
                 returnstring += this.idletime + sep; 
+                if(this.firstDate != null)
+                {
+                    returnstring += this.firstDate;
+                }
+               
             }
             else
             {
-                foreach (KeyValuePair<string, int> pair in this.statusTimes)
-                {
-                    returnstring += pair.Value + ",";
-                }
-
                 if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
                 {
                     returnstring += ",";
@@ -94,20 +94,30 @@ namespace IssueColl.Report
                 {
                     returnstring += FirstDate.ToString() + ",";
                 }
+
+                if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
+                {
+                    if (idleIssue)
+                    {
+                        returnstring += this.DoneDate.ToString() + ",";
+                    }
+                    else returnstring += ",";
+                }
+                else
+                {
+                    returnstring += this.ClosedDate.ToString() + ",";
+                }
+
+                foreach (KeyValuePair<string, int> pair in this.statusTimes)
+                {
+                    returnstring += pair.Value + ",";
+                }
+
+                
             }
             
 
-            //if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
-            //{
-            //    if (idleIssue)
-            //    {
-            //        returnstring += this.DoneDate.ToString() + ",";
-            //    }
-            //}
-            //else
-            //{
-            //    returnstring += this.ClosedDate.ToString();
-            //}
+            
 
             //returnstring += System.Environment.NewLine;
 
