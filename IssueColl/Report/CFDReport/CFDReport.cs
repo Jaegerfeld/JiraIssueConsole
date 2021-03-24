@@ -12,10 +12,11 @@ namespace IssueColl.Report.CFDReport
     {
 
         string headerLine = "";
-        List<CFDReportLine> dayLines = new List<CFDReportLine>();
+   
+        Dictionary<DateTime, CFDReportLine> dayLines;
 
         public string HeaderLine { get => headerLine; set => headerLine = value; }
-        internal List<CFDReportLine> DayLines { get => dayLines; set => dayLines = value; }
+        internal Dictionary<DateTime, CFDReportLine> Daylines { get => dayLines; set => dayLines = value; }
 
         public CFDReport() { }
         

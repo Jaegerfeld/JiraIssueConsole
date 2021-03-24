@@ -1,4 +1,5 @@
-﻿using IssueColl.Setup;
+﻿using Atlassian.Jira;
+using IssueColl.Setup;
 using Jiracoll;
 using Newtonsoft.Json;
 using System;
@@ -39,8 +40,9 @@ namespace IssueColl.Report.CFDReport
 
             DateTime lastYear = DateTime.Today.AddYears(-1);
             
-            this.buildDateDict(config,lastYear,DateTime.Today);
+            returnReport.Daylines = this.buildDateDict(config,lastYear,DateTime.Today);
 
+            //returnReport.Daylines = this.buildCFDReportLines(JsonContent.issues);
 
 
             return returnReport;
@@ -69,14 +71,17 @@ namespace IssueColl.Report.CFDReport
 
 
 
-        public CFDReportLine buildCFDReportLine()
+        public Dictionary<DateTime, CFDReportLine>  buildCFDReportLines(IList<IssuePOCO> issues)
         {
-            CFDReportLine returnLine = new CFDReportLine();
+            Dictionary<DateTime, CFDReportLine> returnLines = new Dictionary<DateTime, CFDReportLine>();
+
+            foreach (IssuePOCO issue in issues)
+            {
+                
+            }
 
 
-
-
-            return returnLine;
+            return returnLines;
         }
 
 
@@ -84,18 +89,14 @@ namespace IssueColl.Report.CFDReport
         {
             Dictionary<DateTime, CFDReportLine> returnDict = new Dictionary<DateTime, CFDReportLine>();
 
-            //testcode ToDo:sss
-            DateTime StartDate = Convert.ToDateTime("15-08-2017");
-            DateTime EndDate = Convert.ToDateTime("20-08-2017");
-            foreach (DateTime day in EachCalendarDay(StartDate, EndDate))
+         
+            foreach (DateTime day in EachCalendarDay(startDate, endDate))
             {
-                Console.WriteLine("Date is : " + day.ToString("dd-MM-yyyy"));
+                //Console.WriteLine("Date is : " + day.ToString("dd-MM-yyyy"));
+                CFDReportLine line = new CFDReportLine();
+                returnDict.Add(day,line);
             }
-            
-
-
-
-
+          
             return returnDict;
 
         }
