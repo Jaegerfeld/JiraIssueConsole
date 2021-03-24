@@ -78,20 +78,17 @@ namespace IssueColl.Report
             if (this.idleIssue)
             {
                 
-                if(this.firstDate != null)
+                if(this.firstDate != null) 
                 {
                     returnstring += this.firstDate + sep + sep;
                 }
-                else
+                else 
                 {
                     returnstring += sep + sep;
                 }
                 returnstring += this.idletime + sep;
-                //foreach (KeyValuePair<string, int> pair in this.statusTimes)
-                //{
-                //    returnstring += pair.Value + sep;
-                //}
-
+              
+                // cause the idle time is the only time we counted, rest are zero by definition
                 for(int i = 0; i < (this.statusTimes.Count - 1); i++)
                 {
                     returnstring += "0" + sep;
