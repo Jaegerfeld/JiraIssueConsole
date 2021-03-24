@@ -125,9 +125,7 @@ namespace IssueColl.Report
                 }
 
                 
-            }
-            
-
+            }            
             
 
             //returnstring += System.Environment.NewLine;
