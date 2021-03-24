@@ -77,12 +77,26 @@ namespace IssueColl.Report
             returnstring += sep + this.resolution + sep;
             if (this.idleIssue)
             {
-                returnstring += this.idletime + sep; 
+                
                 if(this.firstDate != null)
                 {
-                    returnstring += this.firstDate;
+                    returnstring += this.firstDate + sep + sep;
                 }
-               
+                else
+                {
+                    returnstring += sep + sep;
+                }
+                returnstring += this.idletime + sep;
+                //foreach (KeyValuePair<string, int> pair in this.statusTimes)
+                //{
+                //    returnstring += pair.Value + sep;
+                //}
+
+                for(int i = 0; i < (this.statusTimes.Count - 1); i++)
+                {
+                    returnstring += "0" + sep;
+                }
+
             }
             else
             {
