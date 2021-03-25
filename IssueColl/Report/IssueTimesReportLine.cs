@@ -78,7 +78,7 @@ namespace IssueColl.Report
             if (this.idleIssue)
             {
                 
-                if(this.firstDate != null) 
+                if(this.firstDate != null && !this.firstDate.Equals(new System.DateTime())) 
                 {
                     returnstring += this.firstDate + sep + sep;
                 }

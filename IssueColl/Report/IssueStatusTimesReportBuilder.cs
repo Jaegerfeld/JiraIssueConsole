@@ -162,12 +162,13 @@ namespace IssueColl.Report
                 {
                     resultLine.FirstDate = resultLine.CreatedDate;
                 }
+                
             }
             // sonst Status gefunden, wenn  nicht: immer noch open
             else
             {
                 DateTime last;
-
+                resultLine.FirstDate = statusRichList.Last().TimeStamp;
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
