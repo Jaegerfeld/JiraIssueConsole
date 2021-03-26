@@ -18,6 +18,21 @@ namespace IssueColl.POCO
         public WorkflowStep FirstStatus { get => firstStatus; set => firstStatus = value; }
         public WorkflowStep LastStatus { get => lastStatus; set => lastStatus = value; }
         internal List<WorkflowStep> WorkflowSteps { get => workflowsteps; set => workflowsteps = value; }
+
+
+
+        public WorkflowStep getStatus(string name)
+        {
+
+            WorkflowStep returnStep = new WorkflowStep();
+            this.workflowsteps.Find(Status => Status.Name.Equals(name));
+
+
+
+
+
+            return returnStep;
+        }
     }
 
 

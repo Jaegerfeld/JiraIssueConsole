@@ -61,7 +61,7 @@ namespace IssueColl.Report
         {
             string header = "";
 
-            header += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
+            header += "Group,Key,Issuetype,Status,Created Date,Component,";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
             header += "First Date,Closed Date,";
 
@@ -79,7 +79,8 @@ namespace IssueColl.Report
                 }
             }
 
-           
+            header += "Resolution";
+
             //header += System.Environment.NewLine; // finish header
             return header;
 
@@ -133,7 +134,7 @@ namespace IssueColl.Report
                 {
                     if (item.FieldName.Equals("status"))
                     {
-                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
+                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), config.Workflow.WorkflowSteps.Find(Status => Status.Name.Equals(item.ToValue)));
 
                         statusRichList.Add(statusTransformation);
                     }
@@ -173,20 +174,26 @@ namespace IssueColl.Report
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
-                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                    //resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+
+                   StatusRich  doneState = getFirstDone(statusRichList);
+                   resultLine.ClosedDate = doneState.TimeStamp;
                 }
+                // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                //else if (statusRichList.Any(p => p.Step.DoneState))
+                //{
+                //    StatusRich doneState = getFirstDone(statusRichList);
+                //    resultLine.ClosedDate = doneState.TimeStamp;
+                //}
+
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
                     resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
 
-                // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                if (statusRichList.Any(p => p.Name.Equals(lastName)))
-                {
-                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                }
+                                
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
@@ -254,6 +261,21 @@ namespace IssueColl.Report
 
 
             return resultLine;
+        }
+
+        public StatusRich getFirstDone(List<StatusRich> statusrichlist)
+        {
+            StatusRich returnStatus = new StatusRich();
+
+            foreach(StatusRich status in statusrichlist)
+            {
+                if (status.Step.DoneState)
+                {
+                    return status;
+                }
+            }
+
+            return returnStatus;
         }
     }
 

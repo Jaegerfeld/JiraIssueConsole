@@ -70,11 +70,14 @@ namespace IssueColl.Report
 
             returnstring += this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep;
 
+            
             foreach (string item in this.component)
             {
                 returnstring += item + "|";
             }
-            returnstring += sep + this.resolution + sep;
+
+            returnstring += sep;
+
             if (this.idleIssue)
             {
                 
@@ -89,7 +92,7 @@ namespace IssueColl.Report
                 returnstring += this.idletime + sep;
               
                 // cause the idle time is the only time we counted, rest are zero by definition
-                for(int i = 0; i < (this.statusTimes.Count - 1); i++)
+                for(int i = 0; i < (this.statusTimes.Count - 2); i++)
                 {
                     returnstring += "0" + sep;
                 }
@@ -124,7 +127,10 @@ namespace IssueColl.Report
                     returnstring += pair.Value + ",";
                 }
 
-                
+
+                returnstring +=  this.resolution;
+
+
             }            
             
 
