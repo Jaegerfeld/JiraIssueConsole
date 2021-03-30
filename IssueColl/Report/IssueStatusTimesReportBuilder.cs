@@ -180,12 +180,44 @@ namespace IssueColl.Report
                    resultLine.ClosedDate = doneState.TimeStamp;
                 }
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen")) 
+                //{ 
+                //    Console.WriteLine("GGG");
+                //}
                 //else if (statusRichList.Any(p => p.Step.DoneState))
                 //{
                 //    StatusRich doneState = getFirstDone(statusRichList);
                 //    resultLine.ClosedDate = doneState.TimeStamp;
                 //}
+                else // Handling deprecated States
+                {
+                    foreach (StatusRich statusRich in statusRichList)
+                    {
+                        List<DateTime> timestamps = new List<DateTime>();
+                        if (statusRich.Step == null)
+                        { 
+                            WorkflowStep alias = new WorkflowStep();
+                            foreach (WorkflowStep step in config.Workflow.WorkflowSteps)
+                            {
+                                if (step.Aliases.Contains(statusRich.Name))
+                                {
+                                    alias = step;
+                                }
+                            }
+                            if (alias.DoneState)
+                            {
+                                timestamps.Add(statusRich.TimeStamp);                                                              
+                            }
+
+                            if(timestamps.Count > 0)
+                            {
+                                 resultLine.ClosedDate = timestamps.Min(obj => obj);
+                            }
+                        }
+
+                    }
+
+                }
 
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
