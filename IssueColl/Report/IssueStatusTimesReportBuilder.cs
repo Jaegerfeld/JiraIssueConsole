@@ -171,6 +171,7 @@ namespace IssueColl.Report
                 DateTime last;
                 resultLine.FirstDate = statusRichList.Last().TimeStamp;
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                // Fall 1: <LAST> State gefunden
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
@@ -189,11 +190,12 @@ namespace IssueColl.Report
                 //    StatusRich doneState = getFirstDone(statusRichList);
                 //    resultLine.ClosedDate = doneState.TimeStamp;
                 //}
-                else // Handling deprecated States
+                else // Fall 2: Handling not in <LAST> but Done &  Fall 3: deprecated States
                 {
                     foreach (StatusRich statusRich in statusRichList)
                     {
                         List<DateTime> timestamps = new List<DateTime>();
+                        // if the current step is a deprecated status find the alias
                         if (statusRich.Step == null)
                         { 
                             WorkflowStep alias = new WorkflowStep();
@@ -214,7 +216,11 @@ namespace IssueColl.Report
                                  resultLine.ClosedDate = timestamps.Min(obj => obj);
                             }
                         }
-
+                        // if it is a done state mark that timestamp
+                        else if (statusRich.Step.DoneState)
+                        {
+                            resultLine.ClosedDate = statusRich.TimeStamp;
+                        }
                     }
 
                 }
