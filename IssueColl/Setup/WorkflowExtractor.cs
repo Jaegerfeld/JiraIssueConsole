@@ -24,9 +24,10 @@ namespace Jiracoll
 
         }
 
+        
         internal Workflow CurrentWorkflow { get => currentWorkflow; set => currentWorkflow = value; }
 
-        public Workflow getWorkflowFromFile(string pathOfWorkflow)
+        public Workflow GetWorkflowFromFile(string pathOfWorkflow)
         {
             Workflow returnWorkflow = new Workflow();
             List<WorkflowStep> steps = new List<WorkflowStep>();
@@ -131,7 +132,7 @@ namespace Jiracoll
             file.Close();
             returnWorkflow.WorkflowSteps = steps;
 
-            this.currentWorkflow = returnWorkflow;
+            this.CurrentWorkflow = returnWorkflow;
 
             return this.CurrentWorkflow;
         }

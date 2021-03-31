@@ -21,7 +21,7 @@ namespace IssueColl.POCO
 
 
 
-        public WorkflowStep getStatus(string name)
+        public WorkflowStep GetStatus(string name)
         {
 
             WorkflowStep returnStep = new WorkflowStep();

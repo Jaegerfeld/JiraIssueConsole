@@ -32,12 +32,12 @@ namespace IssueColl
                     workflowname = args[2];
                 }
 
-                configLoader.setFilenames(args[0], args[1]);
-                Config config = configLoader.loadWorkflowFromFile(workflowname);
+                configLoader.SetFilenames(args[0], args[1]);
+                Config config = configLoader.LoadWorkflowFromFile(workflowname);
 
-                report = issueStatusTimesReportBuilder.buildReport(config);
+                report = issueStatusTimesReportBuilder.BuildReport(config);
 
-                fileExporter.exportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.ExportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");
 
             }
 

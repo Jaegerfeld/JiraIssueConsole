@@ -15,12 +15,14 @@ namespace IssueColl.Report
         IssueTimesReport report;
         Config config;
         List<string> doneStatesList = new List<string>();
-        List<String> notFoundStep = new List<String>();
+        List<string> notFoundStep = new List<string>();
 
         internal Config Config { get => config; set => config = value; }
         internal IssueTimesReport Report { get => report; set => report = value; }
+        public List<string> NotFoundStep { get => notFoundStep; set => notFoundStep = value; }
+        public List<string> DoneStatesList { get => doneStatesList; set => doneStatesList = value; }
 
-        internal IssueTimesReport buildReport(Config config)
+        internal IssueTimesReport BuildReport(Config config)
         {
             this.Config = config;
 
@@ -33,20 +35,20 @@ namespace IssueColl.Report
             IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
 
-            report.HeaderLine = this.buildHeader();
+            report.HeaderLine = this.BuildHeader();
 
 
             // every issue is a seperate line in the report csv
             foreach (IssuePOCO issue in JsonContent.issues)
             {
-                report.IssueLines.Add(this.buildLine(issue));
+                report.IssueLines.Add(this.BuildLine(issue));
             }
 
-            if (notFoundStep.Count > 0)
+            if (NotFoundStep.Count > 0)
             {
                 Console.WriteLine("********Warnings*********\nFound Steps not in Workflow File:\n");
             }
-            foreach(string step in notFoundStep)
+            foreach(string step in NotFoundStep)
             {
                 Console.WriteLine(step);
             }
@@ -57,7 +59,7 @@ namespace IssueColl.Report
 
         /* The header of the report csv has an constant and an flex part.
        Every issue has a group (parent issue), Key, Type, Status, Created Date, Component (maybe EMPTY or NULL), resolution (maybe EMPTY or NULL), */
-        private string buildHeader()
+        private string BuildHeader()
         {
             string header = "";
 
@@ -75,7 +77,7 @@ namespace IssueColl.Report
                 header += status.Name + ",";
                 if (status.DoneState)
                 {
-                    doneStatesList.Add(status.Name);
+                    DoneStatesList.Add(status.Name);
                 }
             }
 
@@ -86,7 +88,7 @@ namespace IssueColl.Report
 
         }
 
-        private IssueTimesReportLine buildLine(IssuePOCO issue)
+        private IssueTimesReportLine BuildLine(IssuePOCO issue)
         {
 
             string lastName = "";
@@ -171,26 +173,18 @@ namespace IssueColl.Report
                 DateTime last;
                 resultLine.FirstDate = statusRichList.Last().TimeStamp;
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                // Fall 1: <LAST> State gefunden
+                
+                // Case 1: <LAST> State found
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
                     //resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
 
-                   StatusRich  doneState = getFirstDone(statusRichList);
+                   StatusRich  doneState = GetFirstDone(statusRichList);
                    resultLine.ClosedDate = doneState.TimeStamp;
                 }
-                // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen")) 
-                //{ 
-                //    Console.WriteLine("GGG");
-                //}
-                //else if (statusRichList.Any(p => p.Step.DoneState))
-                //{
-                //    StatusRich doneState = getFirstDone(statusRichList);
-                //    resultLine.ClosedDate = doneState.TimeStamp;
-                //}
-                else // Fall 2: Handling not in <LAST> but Done &  Fall 3: deprecated States
+           
+                else // Case 2: Handling not passed <LAST> but already Done &  Case 3: deprecated States
                 {
                     foreach (StatusRich statusRich in statusRichList)
                     {
@@ -216,7 +210,7 @@ namespace IssueColl.Report
                                  resultLine.ClosedDate = timestamps.Min(obj => obj);
                             }
                         }
-                        // if it is a done state mark that timestamp
+                        // if there is a done state, mark that timestamp
                         else if (statusRich.Step.DoneState)
                         {
                             resultLine.ClosedDate = statusRich.TimeStamp;
@@ -242,7 +236,7 @@ namespace IssueColl.Report
                     resultLine.FirstDate = resultLine.CreatedDate;
                 }
 
-                // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
+                // letzter Zeitpunkt: Erstelldatum des Datenabzugs (aka "wann ist heute?")                                                
                 last = currentDate;
                 DateTime firstTrans = new DateTime();
                 // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
@@ -267,7 +261,7 @@ namespace IssueColl.Report
                     {
                         statusName = statusTrans.Name;
                     }
-                    if (doneStatesList.Contains(statusName))
+                    if (DoneStatesList.Contains(statusName))
                     {
                         resultLine.DoneDate = statusTrans.TimeStamp;
                         resultLine.FoundDate = true;
@@ -275,9 +269,9 @@ namespace IssueColl.Report
                     if (!dict.ContainsKey(statusName))
                     {
                         dict.Add(statusName, 0);
-                        if (!notFoundStep.Contains(statusName)) 
+                        if (!NotFoundStep.Contains(statusName)) 
                         {
-                            notFoundStep.Add(statusName);
+                            NotFoundStep.Add(statusName);
                         }
                     }
                     dict[statusName] += statusTrans.Minutes;
@@ -301,7 +295,7 @@ namespace IssueColl.Report
             return resultLine;
         }
 
-        public StatusRich getFirstDone(List<StatusRich> statusrichlist)
+        public StatusRich GetFirstDone(List<StatusRich> statusrichlist)
         {
             StatusRich returnStatus = new StatusRich();
 
