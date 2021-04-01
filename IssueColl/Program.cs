@@ -30,7 +30,7 @@ namespace IssueColl
                 IssueTimesReport issueTimeReport;
                 CFDReport cFDReport;
 
-                string workflowname = "workflowname.txt";
+                string workflowname = "workflow.txt";
                 if (args.Length == 3)
                 {
                     workflowname = args[2];
@@ -40,9 +40,10 @@ namespace IssueColl
                 Config config = configLoader.loadWorkflowFromFile(workflowname);
 
                 issueTimeReport = issueStatusTimesReportBuilder.buildReport(config);
-                cFDReport = cFDReportBuilder.buildReport(config);
+                cFDReport = cFDReportBuilder.BuildReport(config);
 
                 fileExporter.exportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
 

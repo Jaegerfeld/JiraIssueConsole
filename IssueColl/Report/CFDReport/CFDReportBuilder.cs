@@ -22,7 +22,7 @@ namespace IssueColl.Report.CFDReport
         internal CFDReport Report { get => report; set => report = value; }
         internal Config Config { get => config; set => config = value; }
 
-        public CFDReport buildReport(Config config)
+        public CFDReport BuildReport(Config config)
         {
             CFDReport returnReport = new CFDReport();
 
@@ -36,26 +36,27 @@ namespace IssueColl.Report.CFDReport
             IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
 
-            returnReport.HeaderLine = this.buildHeader();
+            returnReport.HeaderLine = this.BuildHeader();
 
-            DateTime lastYear = DateTime.Today.AddYears(-1);
+            DateTime lastYear = DateTime.Today.AddYears(-2);
             
-            returnReport.Daylines = this.buildDateDict(config,lastYear,DateTime.Today);
+            returnReport.Daylines = this.BuildDateDict(config,lastYear,DateTime.Today);
 
-            //returnReport.Daylines = this.buildCFDReportLines(JsonContent.issues);
+            returnReport.Daylines = this.BuildCFDReportLines(JsonContent.issues, returnReport.Daylines);
 
 
             return returnReport;
-        } 
+        }
 
+  
 
-        public string buildHeader()
+        public string BuildHeader()
         {
             
 
             string header = "";
 
-            header += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
+            header += "Day,";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
 
             List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
@@ -71,13 +72,35 @@ namespace IssueColl.Report.CFDReport
 
 
 
-        public Dictionary<DateTime, CFDReportLine>  buildCFDReportLines(IList<IssuePOCO> issues)
+        public Dictionary<DateTime, CFDReportLine>  BuildCFDReportLines(IList<IssuePOCO> issues,Dictionary<DateTime, CFDReportLine> dayLines )
         {
-            Dictionary<DateTime, CFDReportLine> returnLines = new Dictionary<DateTime, CFDReportLine>();
+            Dictionary<DateTime, CFDReportLine> returnLines = dayLines;
 
             foreach (IssuePOCO issue in issues)
             {
-                
+                foreach (IssueHistoryPOCO history in issue.changelog.histories)
+                {
+                    foreach (IssueChangeLogItem item in history.items)
+                    {
+                        if (item.FieldName.Equals("status"))
+                        {
+                            DateTime day = DateTime.Parse(history.created.ToString());
+
+                            DateTime justday = new DateTime(day.Year, day.Month, day.Day);
+                            try
+                            {
+                                ((returnLines[justday]).StatusCount[item.ToValue]) += 1;
+                            }
+                            catch (System.Collections.Generic.KeyNotFoundException e)
+                            {
+
+                                Console.WriteLine("Status nicht in WorkflowActions: " + item.ToValue );
+                            }
+                          //returnLines[day].StatusCount.TryGetValue(item.ToValue);
+                        }
+                    }
+                }
+
             }
 
 
@@ -85,7 +108,7 @@ namespace IssueColl.Report.CFDReport
         }
 
 
-        public Dictionary<DateTime, CFDReportLine> buildDateDict(Config config, DateTime startDate, DateTime endDate) 
+        public Dictionary<DateTime, CFDReportLine> BuildDateDict(Config config, DateTime startDate, DateTime endDate) 
         {
             Dictionary<DateTime, CFDReportLine> returnDict = new Dictionary<DateTime, CFDReportLine>();
 
@@ -93,7 +116,7 @@ namespace IssueColl.Report.CFDReport
             foreach (DateTime day in EachCalendarDay(startDate, endDate))
             {
                 //Console.WriteLine("Date is : " + day.ToString("dd-MM-yyyy"));
-                CFDReportLine line = new CFDReportLine();
+                CFDReportLine line = new CFDReportLine(day,this.config.Workflow);
                 returnDict.Add(day,line);
             }
           

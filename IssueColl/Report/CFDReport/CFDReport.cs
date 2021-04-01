@@ -20,7 +20,22 @@ namespace IssueColl.Report.CFDReport
 
         public CFDReport() { }
         
+        public override string ToString()
+        {
+            string returnString = "";
 
+            returnString += this.headerLine + " \n";
+
+
+
+            foreach ( KeyValuePair<DateTime, CFDReportLine> line in this.dayLines)
+            {
+                
+                returnString += line.Value.ToString() + " \n";
+            }
+
+            return returnString;
+        }
         
     }
 }
