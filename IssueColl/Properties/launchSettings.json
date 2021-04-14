@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "\"THEAPP_Features.json\" testTheApp workflow_Skyway.txt"
+      "commandLineArgs": "\"Stromberg.json\" Stromberg workflow_Team_Stromberg.txt"
     }
   }
 }

@@ -179,7 +179,7 @@ namespace IssueColl.Report
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
                     //resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-
+                    Console.WriteLine(issue.key);
                    StatusRich  doneState = GetFirstDone(statusRichList);
                    resultLine.ClosedDate = doneState.TimeStamp;
                 }
