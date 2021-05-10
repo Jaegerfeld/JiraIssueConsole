@@ -1,5 +1,6 @@
 ﻿using IssueColl.Export;
 using IssueColl.Report;
+using IssueColl.Report.CFDReport;
 using IssueColl.Setup;
 using System;
 
@@ -12,6 +13,7 @@ namespace IssueColl
 
             ConfigLoader configLoader = new ConfigLoader();
             IssueStatusTimesReportBuilder issueStatusTimesReportBuilder = new IssueStatusTimesReportBuilder();
+            CFDReportBuilder cFDReportBuilder = new CFDReportBuilder();
             FileExporter fileExporter = new FileExporter();
 
 
@@ -25,19 +27,23 @@ namespace IssueColl
 
             {
                  
-                IssueTimesReport report;
-                string workflowname = "workflowname.txt";
+                IssueTimesReport issueTimeReport;
+                CFDReport cFDReport;
+
+                string workflowname = "workflow.txt";
                 if (args.Length == 3)
                 {
                     workflowname = args[2];
                 }
 
-                configLoader.SetFilenames(args[0], args[1]);
-                Config config = configLoader.LoadWorkflowFromFile(workflowname);
+                configLoader.setFilenames(args[0], args[1]);
+                Config config = configLoader.loadWorkflowFromFile(workflowname);
 
-                report = issueStatusTimesReportBuilder.BuildReport(config);
+                issueTimeReport = issueStatusTimesReportBuilder.buildReport(config);
+                cFDReport = cFDReportBuilder.BuildReport(config);
 
-                fileExporter.ExportToFile(report.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
 
