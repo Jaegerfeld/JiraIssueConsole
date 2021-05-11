@@ -25,7 +25,7 @@ namespace IssueColl.Report
         internal IssueTimesReport BuildReport(Config config)
         {
             this.Config = config;
-
+            Console.WriteLine("Building Issue Times  Report...  ");
 
             string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.JsonFileName;
 
@@ -179,7 +179,7 @@ namespace IssueColl.Report
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
                     //resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                    Console.WriteLine(issue.key);
+                  //  Console.WriteLine(issue.key);
                    StatusRich  doneState = GetFirstDone(statusRichList);
                    resultLine.ClosedDate = doneState.TimeStamp;
                 }

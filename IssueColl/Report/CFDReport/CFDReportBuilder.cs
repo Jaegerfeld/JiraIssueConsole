@@ -25,6 +25,7 @@ namespace IssueColl.Report.CFDReport
         public CFDReport BuildReport(Config config)
         {
             CFDReport returnReport = new CFDReport();
+            Console.WriteLine("Building CFD Report.... ");
 
             this.Config = config;
 
@@ -38,7 +39,7 @@ namespace IssueColl.Report.CFDReport
 
             returnReport.HeaderLine = this.BuildHeader();
 
-            DateTime lastYear = DateTime.Today.AddYears(-2);
+            DateTime lastYear = DateTime.Today.AddYears(-6);
             
             returnReport.Daylines = this.BuildDateDict(config,lastYear,DateTime.Today);
 
@@ -76,6 +77,7 @@ namespace IssueColl.Report.CFDReport
         {
             Dictionary<DateTime, CFDReportLine> returnLines = dayLines;
 
+            
             foreach (IssuePOCO issue in issues)
             {
                 foreach (IssueHistoryPOCO history in issue.changelog.histories)
@@ -93,8 +95,17 @@ namespace IssueColl.Report.CFDReport
                             }
                             catch (System.Collections.Generic.KeyNotFoundException e)
                             {
+                                foreach(WorkflowStep step in config.Workflow.WorkflowSteps)
+                                {
+                                    if (step.Aliases.Contains(item.ToValue))
+                                    {
+                                       // Console.WriteLine("gefunden: " + step.Name);
+                                        ((returnLines[justday]).StatusCount[step.Name]) += 1;
+                                    }
+                                  
 
-                                Console.WriteLine("Status nicht in WorkflowActions: " + item.ToValue );
+                                }
+                                //Console.WriteLine("Status nicht in WorkflowActions: " + item.ToValue );
                             }
                           //returnLines[day].StatusCount.TryGetValue(item.ToValue);
                         }
