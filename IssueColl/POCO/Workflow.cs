@@ -33,6 +33,25 @@ namespace IssueColl.POCO
 
             return returnStep;
         }
+
+        public WorkflowStep GetAlias(string name)
+        {
+            WorkflowStep returnStep = new WorkflowStep();
+
+
+            foreach(WorkflowStep step in this.WorkflowSteps)
+            {
+                if (step.Aliases.Contains(name))
+                {
+                    return step;
+                }
+            }
+
+
+           
+
+            return returnStep;
+        }
     }
 
 

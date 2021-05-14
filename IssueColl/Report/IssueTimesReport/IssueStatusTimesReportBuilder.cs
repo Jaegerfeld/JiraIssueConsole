@@ -136,7 +136,13 @@ namespace IssueColl.Report
                 {
                     if (item.FieldName.Equals("status"))
                     {
-                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), config.Workflow.WorkflowSteps.Find(Status => Status.Name.Equals(item.ToValue)));
+                        WorkflowStep wstep = new WorkflowStep();
+                        wstep = config.Workflow.WorkflowSteps.Find(Status => Status.Name.Equals(item.ToValue));
+                        if(wstep == null)
+                        {
+                            wstep = this.config.Workflow.GetAlias(item.ToValue);
+                        }
+                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), wstep);
 
                         statusRichList.Add(statusTransformation);
                     }
@@ -301,6 +307,13 @@ namespace IssueColl.Report
 
             foreach(StatusRich status in statusrichlist)
             {
+
+                if (status.Step == null)
+                {
+                   WorkflowStep step = this.config.Workflow.GetAlias(status.Name);
+                   
+                   
+                }
                 if (status.Step.DoneState)
                 {
                     return status;

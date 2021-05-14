@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "\"ProPo.json\" ProPo workflow_myPorsche.txt"
+      "commandLineArgs": "\"FamilyGuy.json\" FamilyGuy workflow_Team_FamilyGuy.txt"
     }
   }
 }
