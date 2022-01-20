@@ -12,6 +12,7 @@ namespace IssueColl.Report
         string key;
         string issuetype;
         string status;
+        string category;
         DateTime createdDate;
         List<string> component;
         string resolution;
@@ -41,6 +42,7 @@ namespace IssueColl.Report
         public bool FoundDate { get => foundDate; set => foundDate = value; }
         public DateTime DoneDate { get => doneDate; set => doneDate = value; }
         public List<string> NotFoundStep { get => notFoundStep; set => notFoundStep = value; }
+        public string Category { get => category; set => category = value; }
 
         public IssueTimesReportLine() { }
 
@@ -55,6 +57,11 @@ namespace IssueColl.Report
             this.createdDate = issue.fields.created;
             this.component = new List<string>();
             this.statusTimes = new Dictionary<string, int>();
+            if (issue.fields.customfield_11404 != null)
+            {
+                this.category = issue.fields.customfield_11404[0].value;
+            }
+            else this.category = "";
 
             foreach (WorkflowStep step in workflow)
             {
@@ -75,6 +82,10 @@ namespace IssueColl.Report
             {
                 returnstring += item + "|";
             }
+
+            returnstring += sep;
+
+            returnstring += this.category;
 
             returnstring += sep;
 

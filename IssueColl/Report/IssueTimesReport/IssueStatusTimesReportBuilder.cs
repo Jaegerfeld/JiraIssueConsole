@@ -63,7 +63,7 @@ namespace IssueColl.Report
         {
             string header = "";
 
-            header += "Group,Key,Issuetype,Status,Created Date,Component,";
+            header += "Group,Key,Issuetype,Status,Created Date,Component,Category";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
             header += "First Date,Closed Date,";
 
