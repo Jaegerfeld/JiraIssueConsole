@@ -9,6 +9,7 @@ namespace IssueColl.Report
     {
 
         string group;
+        string project;
         string key;
         string issuetype;
         string status;
@@ -43,6 +44,7 @@ namespace IssueColl.Report
         public DateTime DoneDate { get => doneDate; set => doneDate = value; }
         public List<string> NotFoundStep { get => notFoundStep; set => notFoundStep = value; }
         public string Category { get => category; set => category = value; }
+        public string Project { get => project; set => project = value; }
 
         public IssueTimesReportLine() { }
 
@@ -75,7 +77,7 @@ namespace IssueColl.Report
             string returnstring = "";
             string sep = ",";
 
-            returnstring += this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep;
+            returnstring += this.project + sep + this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep;
 
             
             foreach (string item in this.component)

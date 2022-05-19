@@ -63,7 +63,7 @@ namespace IssueColl.Report
         {
             string header = "";
 
-            header += "Group,Key,Issuetype,Status,Created Date,Component,Category";
+            header += "Project,Group,Key,Issuetype,Status,Created Date,Component,Category,";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
             header += "First Date,Closed Date,";
 
@@ -107,7 +107,10 @@ namespace IssueColl.Report
                     resultLine.Component.Add(item.name);
                 }
             }
-
+            if (issue.fields.project != null)
+            {
+                resultLine.Project = issue.fields.project.name;
+            }
             // resolution could be Empty or even NULL(depends on jira version) if the issue is not done
             if (issue.fields.resolution != null)
             {
