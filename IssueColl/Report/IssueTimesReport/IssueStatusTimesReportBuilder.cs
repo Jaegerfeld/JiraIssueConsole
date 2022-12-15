@@ -46,7 +46,7 @@ namespace IssueColl.Report
 
             if (NotFoundStep.Count > 0)
             {
-                Console.WriteLine("********Warnings*********\nFound Steps not in Workflow File:\n");
+                Console.WriteLine("********Warnings**************\n !!!Found Steps not in Workflow File:\n !!! \n ******************************");
             }
             foreach(string step in NotFoundStep)
             {

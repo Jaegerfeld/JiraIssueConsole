@@ -38,12 +38,13 @@ namespace IssueColl
 
                 configLoader.SetFilenames(args[0], args[1]);
                 Config config = configLoader.LoadWorkflowFromFile(workflowname);
+                Console.WriteLine("****************************\n Building Report for:  " + args[1] + "\n");
 
                 issueTimeReport = issueStatusTimesReportBuilder.BuildReport(config);
-                cFDReport = cFDReportBuilder.BuildReport(config);
+                //cFDReport = cFDReportBuilder.BuildReport(config);
 
                 fileExporter.ExportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
-                fileExporter.ExportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
+                //fileExporter.ExportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
 
