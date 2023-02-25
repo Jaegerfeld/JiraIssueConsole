@@ -77,9 +77,11 @@ namespace IssueColl.Report.CFDReport
         {
             Dictionary<DateTime, CFDReportLine> returnLines = dayLines;
 
-            
+            int issuesOutOfTime = 0;
             foreach (IssuePOCO issue in issues)
             {
+                Dictionary<String, Boolean> usedSteps = getUsedStatusDict();
+
                 foreach (IssueHistoryPOCO history in issue.changelog.histories)
                 {
                     foreach (IssueChangeLogItem item in history.items)
@@ -91,16 +93,25 @@ namespace IssueColl.Report.CFDReport
                             DateTime justday = new DateTime(day.Year, day.Month, day.Day);
                             try
                             {
+                                var test = usedSteps[item.ToValue];
+                                if (!usedSteps[item.ToValue]){ 
                                 ((returnLines[justday]).StatusCount[item.ToValue]) += 1;
+                                usedSteps[item.ToValue] = true;
+                                }
                             }
                             catch (System.Collections.Generic.KeyNotFoundException e)
                             {
                                 foreach(WorkflowStep step in config.Workflow.WorkflowSteps)
                                 {
-                                    if (step.Aliases.Contains(item.ToValue))
+                                    if (!returnLines.ContainsKey(justday))
+                                    {
+                                       issuesOutOfTime++;
+                                    }
+                                    else if (step.Aliases.Contains(item.ToValue))
                                     {
                                        // Console.WriteLine("gefunden: " + step.Name);
                                         ((returnLines[justday]).StatusCount[step.Name]) += 1;
+                                        usedSteps[step.Name] = true;
                                     }
                                   
 
@@ -113,11 +124,21 @@ namespace IssueColl.Report.CFDReport
                 }
 
             }
-
+            Console.WriteLine("(CFD) issues out of Timeframe: " + issuesOutOfTime);
 
             return returnLines;
         }
+        public Dictionary<String, Boolean> getUsedStatusDict()
+        {
+            Dictionary<String, Boolean> returnDict = new Dictionary<String, Boolean>();
 
+            foreach (WorkflowStep step in config.Workflow.WorkflowSteps)
+            {
+                returnDict.Add(step.Name, false);
+            }
+
+            return returnDict;
+        }
 
         public Dictionary<DateTime, CFDReportLine> BuildDateDict(Config config, DateTime startDate, DateTime endDate) 
         {
