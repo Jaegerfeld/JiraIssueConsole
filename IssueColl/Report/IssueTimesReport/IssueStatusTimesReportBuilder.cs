@@ -151,6 +151,11 @@ namespace IssueColl.Report
                     }
                 }
             }
+           // WorkflowStep funnelStep = statusRichList.First().Step;
+
+           
+            // korrektur Funnel Time (erster Status wird nicht durch Transition sondertn create gemeldet
+
 
             //DateTime CloseDate = new DateTime();
             //DateTime FirstDate = new DateTime();
@@ -289,7 +294,7 @@ namespace IssueColl.Report
 
                 // add time for initial Status
                 int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
-                WorkflowStep first = config.Workflow.FirstStatus;
+                WorkflowStep first = config.Workflow.VeryFirstStep;
                 dict[first.Name] += firstTime;
 
 
