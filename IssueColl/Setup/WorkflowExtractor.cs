@@ -62,7 +62,7 @@ namespace Jiracoll
                 {
                     string name = line.Split('>')[1];
                     WorkflowStep step = steps.Find(item => item.Name == name);
-                    (steps.Find(item => item.Name == name)).First = true;
+                    (steps.Find(item => item.Name == name)).Impl = true;
                     returnWorkflow.ImplStatus = step;
                 }
 

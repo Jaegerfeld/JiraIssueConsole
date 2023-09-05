@@ -138,6 +138,8 @@ namespace IssueColl.Report
 
             List<StatusRich> statusRichList = new List<StatusRich>();
 
+            Boolean implNotReached = true;
+
             foreach (IssueHistoryPOCO history in issue.changelog.histories)
             {
                 foreach (IssueChangeLogItem item in history.items)
@@ -153,6 +155,16 @@ namespace IssueColl.Report
                         StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), wstep);
 
                         statusRichList.Add(statusTransformation);
+
+                        if (implNotReached)
+                        {
+                            if (wstep.Impl) 
+                            {
+
+                                resultLine.ImplDate = DateTime.Parse(history.created.ToString());
+                                implNotReached = false;
+                            }
+                        }
                     }
                 }
             }
