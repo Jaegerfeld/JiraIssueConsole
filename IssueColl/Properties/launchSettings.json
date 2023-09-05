@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "msf.json msfnew workflow_msf.txt"
+      "commandLineArgs": "ART.json art workflow_ART.txt"
     }
   }
 }

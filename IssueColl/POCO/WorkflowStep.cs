@@ -11,6 +11,7 @@ namespace Jiracoll
         List<String> aliases;
         Boolean first = false;
         Boolean last = false;
+        Boolean impl = false;
         Boolean createState = false;
         Boolean doneState = false;
         DateTime timeStamp = new DateTime();
@@ -34,7 +35,7 @@ namespace Jiracoll
         public bool DoneState { get => doneState; set => doneState = value; }
         public DateTime TimeStamp { get => timeStamp; set => timeStamp = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
-        
+        public bool Impl { get => impl; set => impl = value; }
     }
 
 }

@@ -19,6 +19,7 @@ namespace IssueColl.Report
         string resolution;
         Dictionary<string, int> statusTimes;
         DateTime firstDate;
+        DateTime implDate;
         DateTime closedDate;
         DateTime doneDate;
         bool idleIssue = false;
@@ -37,6 +38,7 @@ namespace IssueColl.Report
         public string Resolution { get => resolution; set => resolution = value; }
         public Dictionary<string, int> StatusTimes { get => statusTimes; set => statusTimes = value; }
         public DateTime FirstDate { get => firstDate; set => firstDate = value; }
+        public DateTime ImplDate { get => implDate; set => implDate = value; }
         public DateTime ClosedDate { get => closedDate; set => closedDate = value; }
         public bool IdleIssue { get => idleIssue; set => idleIssue = value; }
         public int Idletime { get => idletime; set => idletime = value; }
@@ -121,6 +123,17 @@ namespace IssueColl.Report
                 {
                     returnstring += FirstDate.ToString() + ",";
                 }
+
+
+                if ((this.ImplDate == null) || ImplDate.Equals(new System.DateTime()))
+                {
+                    returnstring += ",";
+                }
+                else
+                {
+                    returnstring += ImplDate.ToString() + ",";
+                }
+
 
                 if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
                 {

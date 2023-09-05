@@ -65,7 +65,7 @@ namespace IssueColl.Report
 
             header += "Project,Group,Key,Issuetype,Status,Created Date,Component,Category,";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
-            header += "First Date,Closed Date,";
+            header += "First Date,Implementation Date,Closed Date,";
 
             List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
             // find the donestate from the config file and mark it
@@ -93,6 +93,7 @@ namespace IssueColl.Report
 
             string lastName = "";
             string firstName = "";
+            string implName = "";
             //bool foundDate = false;
             
 
@@ -128,6 +129,10 @@ namespace IssueColl.Report
                 if (status.First)
                 {
                     firstName = status.Name;
+                }
+                if (status.Impl)
+                {
+                    implName = status.Name;
                 }
             }
 
