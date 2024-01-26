@@ -57,6 +57,7 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     (steps.Find(item => item.Name == name)).First = true;
                     returnWorkflow.FirstStatus = step;
+                    continue;
                 }
                 if (line.Contains("<Implementation>"))
                 {
@@ -64,6 +65,8 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     (steps.Find(item => item.Name == name)).Impl = true;
                     returnWorkflow.ImplStatus = step;
+                    continue;
+
                 }
 
                 else if (line.Contains("<Last>"))
@@ -72,8 +75,9 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     step.Last = true;
                     returnWorkflow.LastStatus = step;
-                    
-               
+                    continue;
+
+
                 }
 
                 else if (line.Contains("<Create>"))
@@ -82,6 +86,7 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     (steps.Find(item => item.Name == name)).CreateState = true;
                     returnWorkflow.VeryFirstStep = step;
+                    continue;
                 }
 
                 else

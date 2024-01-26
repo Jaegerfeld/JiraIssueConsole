@@ -71,6 +71,7 @@ namespace IssueColl.Report
             {
                 this.statusTimes.Add(step.Name, 0);
             }
+            int a = 0;
 
         }
 
@@ -98,13 +99,13 @@ namespace IssueColl.Report
                 
                 if(this.firstDate != null && !this.firstDate.Equals(new System.DateTime())) 
                 {
-                    returnstring += this.firstDate + sep + sep;
+                    returnstring += this.firstDate + sep + sep + sep;
                 }
                 else 
                 {
-                    returnstring += sep + sep;
+                    returnstring += sep + sep + sep;
                 }
-                returnstring += this.idletime + sep;
+                returnstring += this.idletime + sep + sep;
               
                 // cause the idle time is the only time we counted, rest are zero by definition
                 for(int i = 0; i < (this.statusTimes.Count - 2); i++)

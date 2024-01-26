@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "ART.json art workflow_ART.txt"
+      "commandLineArgs": "pvda.json pvda1 workflow_PVDA1.txt"
     }
   }
 }

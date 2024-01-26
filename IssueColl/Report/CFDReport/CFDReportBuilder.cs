@@ -57,7 +57,7 @@ namespace IssueColl.Report.CFDReport
 
             string header = "";
 
-            header += "Day,";
+            header += "Day";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
 
             List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
@@ -65,7 +65,7 @@ namespace IssueColl.Report.CFDReport
             // adding the given statuses from the config file to the header
             foreach (WorkflowStep status in statuses)
             {
-                header += status.Name + ",";              
+                header += "," + status.Name;              
             }
             return header;
 

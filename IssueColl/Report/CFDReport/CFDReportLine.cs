@@ -33,13 +33,18 @@ namespace IssueColl.Report.CFDReport
          public override string ToString()
         {
             string returnString = "";
+            
+            returnString += this.date.ToShortDateString();
 
-            returnString += this.date.ToShortDateString() + ",";
+            string helpstring = "";
+            helpstring += returnString;
+
             foreach(KeyValuePair<string, int> pair in this.statusCount)
             {
-                returnString += pair.Value + ",";
+                returnString += "," + pair.Value ;
+                helpstring += pair.Key + " : " +  pair.Value + ",";
             }
-
+           // System.Console.WriteLine(helpstring);
 
             return returnString;
         }
