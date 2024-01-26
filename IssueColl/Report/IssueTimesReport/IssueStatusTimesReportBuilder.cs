@@ -105,12 +105,23 @@ namespace IssueColl.Report
             {
                 foreach (IssueComponentsItemPOCO item in issue.fields.components)
                 {
-                    resultLine.Component.Add(item.name);
+                    string cName = item.name;
+                    if (cName.Contains(","))
+                    {
+                        cName = cName.Replace(',', ' ');
+                    }
+                    
+                    resultLine.Component.Add(cName);
                 }
             }
             if (issue.fields.project != null)
             {
-                resultLine.Project = issue.fields.project.name;
+                string pName = issue.fields.project.name;
+                if (pName.Contains(","))
+                {
+                    pName = pName.Replace(',', ' ');
+                } 
+                    resultLine.Project = pName;
             }
             // resolution could be Empty or even NULL(depends on jira version) if the issue is not done
             if (issue.fields.resolution != null)
@@ -151,7 +162,9 @@ namespace IssueColl.Report
                         if(wstep == null)
                         {
                             wstep = this.config.Workflow.GetAlias(item.ToValue);
+                            
                         }
+                        if (wstep == null) break;
                         StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), wstep);
 
                         statusRichList.Add(statusTransformation);

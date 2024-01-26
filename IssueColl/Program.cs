@@ -41,10 +41,10 @@ namespace IssueColl
                 Console.WriteLine("****************************\n Building Report for:  " + args[1] + "\n");
 
                 issueTimeReport = issueStatusTimesReportBuilder.BuildReport(config);
-                //cFDReport = cFDReportBuilder.BuildReport(config);
+                cFDReport = cFDReportBuilder.BuildReport(config);
 
                 fileExporter.ExportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
-                //fileExporter.ExportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
+                fileExporter.ExportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
 
