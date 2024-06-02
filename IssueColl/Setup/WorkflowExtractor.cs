@@ -57,6 +57,12 @@ namespace Jiracoll
                     (steps.Find(item => item.Name == name)).First = true;
                     returnWorkflow.FirstStatus = step;
                 }
+                else if (line.Contains("<Implementation>"))
+                {
+                    string name = line.Split('>')[1];
+                    WorkflowStep step = steps.Find(item => item.Name == name);
+                    returnWorkflow.ImplStatus = step;
+                }
 
                 else if (line.Contains("<Last>"))
                 {

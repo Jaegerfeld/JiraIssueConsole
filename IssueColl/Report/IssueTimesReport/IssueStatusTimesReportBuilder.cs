@@ -111,6 +111,7 @@ namespace IssueColl.Report
                 resultLine.Resolution = issue.fields.resolution.name;
             }
 
+            // Herausfinden ob das Issue schon begonnen (In Anlysis i.A. ) oder angefangen (completed i.A.) wurde
             Dictionary<string, int> dict = new Dictionary<string, int>();
             foreach (WorkflowStep status in this.config.Workflow.WorkflowSteps)
             {
@@ -126,7 +127,8 @@ namespace IssueColl.Report
             }
 
             List<StatusRich> statusRichList = new List<StatusRich>();
-
+            // Alle History einträge im changelog durchlaufen und wenn Eintrag ein Status ist
+            // status der richlist hinzufügen
             foreach (IssueHistoryPOCO history in issue.changelog.histories)
             {
                 foreach (IssueChangeLogItem item in history.items)
@@ -140,9 +142,6 @@ namespace IssueColl.Report
                 }
             }
 
-            //DateTime CloseDate = new DateTime();
-            //DateTime FirstDate = new DateTime();
-            //DateTime DoneDate = new DateTime();
 
             // umsortieren letzter zuerst, desc
             statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
@@ -158,9 +157,16 @@ namespace IssueColl.Report
 
                 resultLine.IdleIssue = true;
                 resultLine.Idletime = minutes;
-                if(config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
+
+
+                //if (issue.fields.status.name.equals(config.workflow.veryfirststep.name))
+                //{
+                //    resultline.firstdate = resultline.createddate;
+                //}
+                if (config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
                 {
                     resultLine.FirstDate = resultLine.CreatedDate;
+                    
                 }
             }
             // sonst Status gefunden, wenn  nicht: immer noch open
@@ -172,28 +178,33 @@ namespace IssueColl.Report
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
-                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                    StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(lastName)));
+                    resultLine.ClosedDate = treffer.TimeStamp;
+                    // resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
                 }
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
-                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                    StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(firstName)));
+                    resultLine.FirstDate = treffer.TimeStamp;
+                    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
 
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                if (statusRichList.Any(p => p.Name.Equals(lastName)))
-                {
-                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                }
+                //if (statusRichList.Any(p => p.Name.Equals(lastName)))
+                //{
+                //    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                //}
 
-                if (statusRichList.Any(p => p.Name.Equals(firstName)))
+                //if (statusRichList.Any(p => p.Name.Equals(firstName)))
+                //{
+                //    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                //}
+                //else
+                if (statusRichList.Count <1 || config.Workflow.FirstStatus.Equals( config.Workflow.VeryFirstStep))
                 {
-                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
-                }
-                else if(statusRichList.Count <1 || config.Workflow.FirstStatus.Equals( config.Workflow.VeryFirstStep))
-                {
-                    resultLine.FirstDate = resultLine.CreatedDate;
+                    //resultLine.FirstDate = null;
                 }
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                

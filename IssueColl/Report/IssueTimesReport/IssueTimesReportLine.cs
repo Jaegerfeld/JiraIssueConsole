@@ -77,19 +77,25 @@ namespace IssueColl.Report
             returnstring += sep + this.resolution + sep;
             if (this.idleIssue)
             {
-                
-                if(this.firstDate != null) 
+
+                if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
                 {
-                    returnstring += this.firstDate + sep + sep;
+                    returnstring += "" + sep + sep;
                 }
                 else 
                 {
                     returnstring += sep + sep;
                 }
-                returnstring += this.idletime + sep;
-              
+
+                //if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
+                //{
+                //    returnstring += sep + sep;
+                //    //returnstring += ",";
+                //}
+
+
                 // cause the idle time is the only time we counted, rest are zero by definition
-                for(int i = 0; i < (this.statusTimes.Count - 1); i++)
+                for (int i = 0; i < (this.statusTimes.Count - 1); i++)
                 {
                     returnstring += "0" + sep;
                 }
