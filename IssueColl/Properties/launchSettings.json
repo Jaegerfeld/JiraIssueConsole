@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "\"DnA_Platform.json\" testTheApp workflow_DnA_Platform.txt"
+      "commandLineArgs": "\"DnA_Platform.json\" DnA_Platform workflow_DnA_Platform.txt"
     }
   }
 }

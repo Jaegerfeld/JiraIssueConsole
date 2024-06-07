@@ -135,8 +135,9 @@ namespace IssueColl.Report
                 {
                     if (item.FieldName.Equals("status"))
                     {
-                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
-
+                        WorkflowStep step =  Config.Workflow.getStepbyName(item.ToValue);
+                        StatusRich statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+                        //StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
                         statusRichList.Add(statusTransformation);
                     }
                 }
@@ -189,6 +190,24 @@ namespace IssueColl.Report
                     resultLine.FirstDate = treffer.TimeStamp;
                     //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
+                if ( ((!(statusRichList.Any(p => p.Name.Equals(firstName)))) || ((statusRichList.Count < 1))) )
+                {
+                    StatusRich treffer = statusRichList.ElementAt(0);
+                    if (!(treffer.Name.Equals(config.Workflow.VeryFirstStep.Name)))
+                    {
+                        resultLine.FirstDate = treffer.TimeStamp;
+                    }
+                    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                }
+                if (statusRichList.Count < 1 || config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
+                {
+                    //resultLine.FirstDate = null;
+                }
+                //if )
+                //{
+                //    StatusRich treffer = statusRichList.ElementAt(0);
+                //    resultLine.FirstDate = treffer.TimeStamp;
+                //}
 
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
@@ -202,10 +221,7 @@ namespace IssueColl.Report
                 //    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 //}
                 //else
-                if (statusRichList.Count <1 || config.Workflow.FirstStatus.Equals( config.Workflow.VeryFirstStep))
-                {
-                    //resultLine.FirstDate = null;
-                }
+
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
                 last = currentDate;
@@ -251,7 +267,8 @@ namespace IssueColl.Report
 
                 // add time for initial Status
                 int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
-                WorkflowStep first = config.Workflow.FirstStatus;
+                WorkflowStep first = config.Workflow.VeryFirstStep;
+                //WorkflowStep first = config.Workflow.FirstStatus;
                 dict[first.Name] += firstTime;
 
 

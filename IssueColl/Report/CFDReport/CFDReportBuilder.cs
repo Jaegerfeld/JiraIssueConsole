@@ -84,12 +84,15 @@ namespace IssueColl.Report.CFDReport
                     {
                         if (item.FieldName.Equals("status"))
                         {
+                            WorkflowStep step = Config.Workflow.getStepbyName(item.ToValue);
+                            //StatusRich statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+
                             DateTime day = DateTime.Parse(history.created.ToString());
 
                             DateTime justday = new DateTime(day.Year, day.Month, day.Day);
                             try
                             {
-                                ((returnLines[justday]).StatusCount[item.ToValue]) += 1;
+                                ((returnLines[justday]).StatusCount[step.Name]) += 1;
                             }
                             catch (System.Collections.Generic.KeyNotFoundException e)
                             {
