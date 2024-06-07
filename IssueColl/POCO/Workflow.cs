@@ -40,7 +40,7 @@ namespace IssueColl.POCO
                     }
             }
 
-
+            Console.WriteLine("Not found step:" + name);
 
             return null;                
 

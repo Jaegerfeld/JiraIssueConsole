@@ -135,10 +135,27 @@ namespace IssueColl.Report
                 {
                     if (item.FieldName.Equals("status"))
                     {
+                        StatusRich statusTransformation = null;
                         WorkflowStep step =  Config.Workflow.getStepbyName(item.ToValue);
-                        StatusRich statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+                        if (step == null) 
+                        {
+                            Console.WriteLine("not found step");
+                            continue;
+                        }
+                        try
+                        {
+                             statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
                         //StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
-                        statusRichList.Add(statusTransformation);
+                        if (statusTransformation != null)
+                        {
+                            statusRichList.Add(statusTransformation);
+                        }
                     }
                 }
             }

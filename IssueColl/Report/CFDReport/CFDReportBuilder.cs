@@ -85,6 +85,10 @@ namespace IssueColl.Report.CFDReport
                         if (item.FieldName.Equals("status"))
                         {
                             WorkflowStep step = Config.Workflow.getStepbyName(item.ToValue);
+                            if(step == null)
+                            {
+                                continue;
+                            }
                             //StatusRich statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
 
                             DateTime day = DateTime.Parse(history.created.ToString());
