@@ -101,7 +101,7 @@ namespace IssueColl.Report.CFDReport
                             catch (System.Collections.Generic.KeyNotFoundException e)
                             {
 
-                                Console.WriteLine("Status nicht in Workflow: " + item.ToValue );
+                                //Console.WriteLine("Status nicht in Workflow: " + item.ToValue );
                             }
                           //returnLines[day].StatusCount.TryGetValue(item.ToValue);
                         }

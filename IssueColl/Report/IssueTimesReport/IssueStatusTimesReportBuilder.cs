@@ -227,11 +227,18 @@ namespace IssueColl.Report
                 //}
 
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                //if (statusRichList.Any(p => p.Name.Equals(lastName)))
-                //{
-                //    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                //}
+                if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                    if (statusRichList.Any(p => p.Name.Equals(lastName)))
+                    {
+                        resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                    }
+
+                // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                if (statusRichList.Any(p => p.Name == "Done") && !statusRichList.Any(p => p.Name.Equals(lastName)))
+                {
+                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                }
+
 
                 //if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 //{
