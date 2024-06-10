@@ -61,9 +61,9 @@ namespace IssueColl.Report
         {
             string header = "";
 
-            header += "Group,Key,Issuetype,Status,Created Date,Component,Resolution,";
+            header += "Project,Group,Key,Issuetype,Status,Created Date,Component,Category,";
             // every issue may have a First date (beeing in the FIRST status from the config File), and  a Closed Date (last entry in closed state)
-            header += "First Date,Closed Date,";
+            header += "First Date,Implementation Date,Closed Date,";
 
             List<WorkflowStep> statuses = config.Workflow.WorkflowSteps;
             // find the donestate from the config file and mark it
@@ -78,8 +78,8 @@ namespace IssueColl.Report
                     doneStatesList.Add(status.Name);
                 }
             }
+            header += "Resolution";
 
-           
             //header += System.Environment.NewLine; // finish header
             return header;
 
@@ -90,8 +90,9 @@ namespace IssueColl.Report
 
             string lastName = "";
             string firstName = "";
+            string implName = "";
             //bool foundDate = false;
-            
+
 
             //Basisc load, without logic total clear data
             IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow.WorkflowSteps);
@@ -103,6 +104,15 @@ namespace IssueColl.Report
                 {
                     resultLine.Component.Add(item.name);
                 }
+            }
+            if (issue.fields.project != null)
+            {
+                string pName = issue.fields.project.name;
+                if (pName.Contains(","))
+                {
+                    pName = pName.Replace(',', ' ');
+                }
+                resultLine.Project = pName;
             }
 
             // resolution could be Empty or even NULL(depends on jira version) if the issue is not done
@@ -124,11 +134,18 @@ namespace IssueColl.Report
                 {
                     firstName = status.Name;
                 }
+                if (status.Impl)
+                {
+                    implName = status.Name;
+                }
             }
 
             List<StatusRich> statusRichList = new List<StatusRich>();
             // Alle History einträge im changelog durchlaufen und wenn Eintrag ein Status ist
             // status der richlist hinzufügen
+
+            Boolean implNotReached = true;
+
             foreach (IssueHistoryPOCO history in issue.changelog.histories)
             {
                 foreach (IssueChangeLogItem item in history.items)
@@ -155,6 +172,15 @@ namespace IssueColl.Report
                         if (statusTransformation != null)
                         {
                             statusRichList.Add(statusTransformation);
+                        }
+                        if (implNotReached)
+                        {
+                            if (step.Impl)
+                            {
+
+                                resultLine.ImplDate = DateTime.Parse(history.created.ToString());
+                                implNotReached = false;
+                            }
                         }
                     }
                 }
