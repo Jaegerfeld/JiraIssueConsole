@@ -86,7 +86,7 @@ namespace IssueColl.Report
 
                 if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
                 {
-                    returnstring += "" + sep + sep;
+                    returnstring += "" + sep + sep +sep;
                 }
                 else 
                 {

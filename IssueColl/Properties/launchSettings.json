@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "\"devx.json\" devx workflow_devx.txt"
+      "commandLineArgs": "\"FIT2A.json\" FIT2A workflow_FIT2A.txt"
     }
   }
 }
