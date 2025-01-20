@@ -34,10 +34,10 @@ namespace IssueColl.Report.CFDReport
         {
             string returnString = "";
 
-            returnString += this.date.ToShortDateString() + ",";
+            returnString += this.date.ToShortDateString() ;
             foreach(KeyValuePair<string, int> pair in this.statusCount)
             {
-                returnString += pair.Value + ",";
+                returnString += "," + pair.Value ;
             }
 
 
