@@ -78,7 +78,8 @@ namespace IssueColl.Report
 
             foreach (string item in this.component)
             {
-                returnstring += item + "|";
+                string component  = item.Replace(",", "");
+                returnstring += component + "|";
             }
             returnstring += sep + this.resolution + sep;
             if (this.idleIssue)
