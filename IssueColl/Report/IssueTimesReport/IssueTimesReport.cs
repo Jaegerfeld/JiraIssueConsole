@@ -7,14 +7,15 @@ namespace IssueColl.Report
 
         string headerLine = "";
         List<IssueTimesReportLine> issueLines = new List<IssueTimesReportLine>();
-
+        string statusTransitionList = "";
 
         public IssueTimesReport()
         {
-
+          statusTransitionList = "Key;Transition;Timestamp" ;
         }
 
         public string HeaderLine { get => headerLine; set => headerLine = value; }
+        public string StatusTransitionList { get => statusTransitionList; set => statusTransitionList = value; }
         internal List<IssueTimesReportLine> IssueLines { get => issueLines; set => issueLines = value; }
 
         public override string ToString()

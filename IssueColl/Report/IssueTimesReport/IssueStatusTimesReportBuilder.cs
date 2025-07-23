@@ -16,6 +16,7 @@ namespace IssueColl.Report
         Config config;
         List<string> doneStatesList = new List<string>();
         List<String> notFoundStep = new List<String>();
+       
 
         internal Config Config { get => config; set => config = value; }
         internal IssueTimesReport Report { get => report; set => report = value; }
@@ -28,7 +29,8 @@ namespace IssueColl.Report
             string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.JsonFileName;
 
             // load json File
-            IssueTimesReport report = new IssueTimesReport();
+            //IssueTimesReport//
+            report = new IssueTimesReport();
             string jsonString = File.ReadAllText(path);
             IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
@@ -190,6 +192,13 @@ namespace IssueColl.Report
             // umsortieren letzter zuerst, desc
             statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
 
+           
+
+            foreach (StatusRich transStatus in statusRichList)
+            {
+                this.report.StatusTransitionList += "\n" + issue.key + ";" + transStatus.Name + ";" + transStatus.TimeStamp;
+            }
+           
             DateTime currentDate = this.config.ReportDate;
             // kein Statuswechsel in History ==> immer noch im initialen Status
             if (statusRichList.Count < 1)
@@ -223,9 +232,60 @@ namespace IssueColl.Report
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
                     StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(lastName)));
-                    resultLine.ClosedDate = treffer.TimeStamp;
+                    //resultLine.ClosedDate = treffer.TimeStamp;
                     // resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+
+
+                    StatusRich t2 = new StatusRich();
+                    StatusRich t3 = new StatusRich();
+                    Boolean closednotset = true;
+
+                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                    if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                        if (statusRichList.Any(p => p.Name.Equals(lastName)))
+                        {
+                            resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                        }
+
+                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                    if (statusRichList.Any(p => p.Name == "Done") && !statusRichList.Any(p => p.Name.Equals(lastName)))
+                    {
+                        resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
+                    }
+
+
+                    List<StatusRich> RealstatusRichList = new List<StatusRich>();
+                    foreach (StatusRich transStatus in statusRichList)
+                    {
+                        if (doneStatesList.Contains(transStatus.Name))
+                        {
+                            if (transStatus.Name.Equals(t2.Name))
+                            {
+                                // allererster gefundener DoneState 
+                                
+                                t2.Name = transStatus.Name;
+                                resultLine.ClosedDate = transStatus.TimeStamp;
+                                continue;
+                            }
+                            t2.Name = transStatus.Name;
+                            resultLine.ClosedDate = transStatus.TimeStamp;
+                            if (closednotset)
+                            {
+                                resultLine.ClosedDate = transStatus.TimeStamp;
+                                closednotset = false;
+                            }
+                        }
+
+                        
+                    }
+                        
+                   // DateTime realdate = 
+
+
                 }
+
+
+
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
@@ -252,18 +312,7 @@ namespace IssueColl.Report
                 //    resultLine.FirstDate = treffer.TimeStamp;
                 //}
 
-                // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                    if (statusRichList.Any(p => p.Name.Equals(lastName)))
-                    {
-                        resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                    }
 
-                // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                if (statusRichList.Any(p => p.Name == "Done") && !statusRichList.Any(p => p.Name.Equals(lastName)))
-                {
-                    resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                }
 
 
                 //if (statusRichList.Any(p => p.Name.Equals(firstName)))

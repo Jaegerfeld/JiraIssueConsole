@@ -43,6 +43,7 @@ namespace IssueColl
                 cFDReport = cFDReportBuilder.BuildReport(config);
 
                 fileExporter.exportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(issueTimeReport.StatusTransitionList, config.ExportFileName + "_Transitions");
                 fileExporter.exportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
