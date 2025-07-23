@@ -1,1 +1,0 @@
-scatterTable <- calcDT[, c('Closed Date', 'CycleDays', 'Key')]

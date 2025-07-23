@@ -8,24 +8,23 @@ namespace IssueColl.Setup
         Config config = new Config();
         WorkflowExtractor extractor = new WorkflowExtractor();
 
-        internal Config Config { get => config; set => config = value; }
-        internal WorkflowExtractor Extractor { get => extractor; set => extractor = value; }
 
-        public Config LoadWorkflowFromFile(string filename)
+
+        public Config loadWorkflowFromFile(string filename)
         {
 
 
             string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + filename;
 
-            this.Config.Workflow = extractor.GetWorkflowFromFile(path);
+            this.config.Workflow = extractor.getWorkflowFromFile(path);
 
-            return this.Config;
+            return this.config;
         }
 
-        public void SetFilenames(string jsonFilename, string exportFilename)
+        public void setFilenames(string jsonFilename, string exportFilename)
         {
-            this.Config.JsonFileName = jsonFilename;
-            this.Config.ExportFileName = exportFilename;
+            this.config.JsonFileName = jsonFilename;
+            this.config.ExportFileName = exportFilename;
         }
     }
 }

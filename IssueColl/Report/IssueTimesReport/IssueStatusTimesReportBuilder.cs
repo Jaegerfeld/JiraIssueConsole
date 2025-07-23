@@ -306,20 +306,7 @@ namespace IssueColl.Report
                 {
                     //resultLine.FirstDate = null;
                 }
-                //if )
-                //{
-                //    StatusRich treffer = statusRichList.ElementAt(0);
-                //    resultLine.FirstDate = treffer.TimeStamp;
-                //}
 
-
-
-
-                //if (statusRichList.Any(p => p.Name.Equals(firstName)))
-                //{
-                //    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
-                //}
-                //else
 
 
                 // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                

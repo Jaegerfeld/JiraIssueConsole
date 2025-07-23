@@ -24,10 +24,9 @@ namespace Jiracoll
 
         }
 
-        
         internal Workflow CurrentWorkflow { get => currentWorkflow; set => currentWorkflow = value; }
 
-        public Workflow GetWorkflowFromFile(string pathOfWorkflow)
+        public Workflow getWorkflowFromFile(string pathOfWorkflow)
         {
             Workflow returnWorkflow = new Workflow();
             List<WorkflowStep> steps = new List<WorkflowStep>();
@@ -57,16 +56,6 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     (steps.Find(item => item.Name == name)).First = true;
                     returnWorkflow.FirstStatus = step;
-                    continue;
-                }
-                if (line.Contains("<Implementation>"))
-                {
-                    string name = line.Split('>')[1];
-                    WorkflowStep step = steps.Find(item => item.Name == name);
-                    (steps.Find(item => item.Name == name)).Impl = true;
-                    returnWorkflow.ImplStatus = step;
-                    continue;
-
                 }
                 else if (line.Contains("<Implementation>"))
                 {
@@ -83,9 +72,8 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     step.Last = true;
                     returnWorkflow.LastStatus = step;
-                    continue;
-
-
+                    
+               
                 }
 
                 else if (line.Contains("<Create>"))
@@ -94,7 +82,6 @@ namespace Jiracoll
                     WorkflowStep step = steps.Find(item => item.Name == name);
                     (steps.Find(item => item.Name == name)).CreateState = true;
                     returnWorkflow.VeryFirstStep = step;
-                    continue;
                 }
 
                 else
@@ -152,7 +139,7 @@ namespace Jiracoll
             file.Close();
             returnWorkflow.WorkflowSteps = steps;
 
-            this.CurrentWorkflow = returnWorkflow;
+            this.currentWorkflow = returnWorkflow;
 
             return this.CurrentWorkflow;
         }
