@@ -36,6 +36,7 @@ namespace Jiracoll
         public DateTime TimeStamp { get => timeStamp; set => timeStamp = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
         public bool Impl { get => impl; set => impl = value; }
+
     }
 
 }

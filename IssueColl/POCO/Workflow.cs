@@ -10,8 +10,8 @@ namespace IssueColl.POCO
         List<WorkflowStep> workflowsteps;
         WorkflowStep firstStatus;
         WorkflowStep lastStatus;
-        WorkflowStep implStatus;
         WorkflowStep veryFirstStep;
+        WorkflowStep implStatus;
         public WorkflowStep VeryFirstStep { get => veryFirstStep; set => veryFirstStep = value; }
 
         public Workflow() { }
@@ -21,38 +21,34 @@ namespace IssueColl.POCO
         internal List<WorkflowStep> WorkflowSteps { get => workflowsteps; set => workflowsteps = value; }
         internal WorkflowStep ImplStatus { get => implStatus; set => implStatus = value; }
 
-        public WorkflowStep GetStatus(string name)
+        public WorkflowStep getStepbyName(string name)
         {
-
-            WorkflowStep returnStep = new WorkflowStep();
-            this.workflowsteps.Find(Status => Status.Name.Equals(name));
-
-
-
-
-
-            return returnStep;
-        }
-
-        public WorkflowStep GetAlias(string name)
-        {
-            WorkflowStep returnStep = new WorkflowStep();
-
-
-            foreach(WorkflowStep step in this.WorkflowSteps)
+            //WorkflowStep step = new WorkflowStep();
+            foreach (WorkflowStep step in workflowsteps)
             {
-                if (step.Aliases.Contains(name))
+                if (step.Name.Equals(name))
                 {
                     return step;
                 }
+                else foreach (String alias in step.Aliases)
+                    {
+                        if (alias.Equals(name))
+                        {
+                            return step;
+                        }
+
+                    }
             }
 
+            Console.WriteLine("Not found step:" + name);
 
-           
-            return null;
-            //return returnStep;
+            return null;                
+
         }
-    }
+
+
+
+        }
 
 
 }

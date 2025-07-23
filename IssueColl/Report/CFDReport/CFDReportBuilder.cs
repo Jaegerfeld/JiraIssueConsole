@@ -25,7 +25,6 @@ namespace IssueColl.Report.CFDReport
         public CFDReport BuildReport(Config config)
         {
             CFDReport returnReport = new CFDReport();
-            Console.WriteLine("Building CFD Report.... ");
 
             this.Config = config;
 
@@ -39,7 +38,7 @@ namespace IssueColl.Report.CFDReport
 
             returnReport.HeaderLine = this.BuildHeader();
 
-            DateTime lastYear = DateTime.Today.AddYears(-6);
+            DateTime lastYear = DateTime.Today.AddYears(-4);
             
             returnReport.Daylines = this.BuildDateDict(config,lastYear,DateTime.Today);
 
@@ -65,7 +64,7 @@ namespace IssueColl.Report.CFDReport
             // adding the given statuses from the config file to the header
             foreach (WorkflowStep status in statuses)
             {
-                header += "," + status.Name;              
+                header += "," + status.Name ;              
             }
             return header;
 
@@ -77,46 +76,32 @@ namespace IssueColl.Report.CFDReport
         {
             Dictionary<DateTime, CFDReportLine> returnLines = dayLines;
 
-            int issuesOutOfTime = 0;
             foreach (IssuePOCO issue in issues)
             {
-                Dictionary<String, Boolean> usedSteps = getUsedStatusDict();
-
                 foreach (IssueHistoryPOCO history in issue.changelog.histories)
                 {
                     foreach (IssueChangeLogItem item in history.items)
                     {
                         if (item.FieldName.Equals("status"))
                         {
+                            WorkflowStep step = Config.Workflow.getStepbyName(item.ToValue);
+                            if(step == null)
+                            {
+                                continue;
+                            }
+                            //StatusRich statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+
                             DateTime day = DateTime.Parse(history.created.ToString());
 
                             DateTime justday = new DateTime(day.Year, day.Month, day.Day);
                             try
                             {
-                                var test = usedSteps[item.ToValue];
-                                if (!usedSteps[item.ToValue]){ 
-                                ((returnLines[justday]).StatusCount[item.ToValue]) += 1;
-                                usedSteps[item.ToValue] = true;
-                                }
+                                ((returnLines[justday]).StatusCount[step.Name]) += 1;
                             }
                             catch (System.Collections.Generic.KeyNotFoundException e)
                             {
-                                foreach(WorkflowStep step in config.Workflow.WorkflowSteps)
-                                {
-                                    if (!returnLines.ContainsKey(justday))
-                                    {
-                                       issuesOutOfTime++;
-                                    }
-                                    else if (step.Aliases.Contains(item.ToValue))
-                                    {
-                                       // Console.WriteLine("gefunden: " + step.Name);
-                                        ((returnLines[justday]).StatusCount[step.Name]) += 1;
-                                        usedSteps[step.Name] = true;
-                                    }
-                                  
 
-                                }
-                                //Console.WriteLine("Status nicht in WorkflowActions: " + item.ToValue );
+                                //Console.WriteLine("Status nicht in Workflow: " + item.ToValue );
                             }
                           //returnLines[day].StatusCount.TryGetValue(item.ToValue);
                         }
@@ -124,21 +109,11 @@ namespace IssueColl.Report.CFDReport
                 }
 
             }
-            Console.WriteLine("(CFD) issues out of Timeframe: " + issuesOutOfTime);
+
 
             return returnLines;
         }
-        public Dictionary<String, Boolean> getUsedStatusDict()
-        {
-            Dictionary<String, Boolean> returnDict = new Dictionary<String, Boolean>();
 
-            foreach (WorkflowStep step in config.Workflow.WorkflowSteps)
-            {
-                returnDict.Add(step.Name, false);
-            }
-
-            return returnDict;
-        }
 
         public Dictionary<DateTime, CFDReportLine> BuildDateDict(Config config, DateTime startDate, DateTime endDate) 
         {

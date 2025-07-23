@@ -2,7 +2,7 @@
   "profiles": {
     "IssueColl": {
       "commandName": "Project",
-      "commandLineArgs": "pvda.json pvda1 workflow_PVDA1.txt"
+      "commandLineArgs": "\"Datona.json\" Datona workflow_Datona.txt"
     }
   }
 }

@@ -36,15 +36,15 @@ namespace IssueColl
                     workflowname = args[2];
                 }
 
-                configLoader.SetFilenames(args[0], args[1]);
-                Config config = configLoader.LoadWorkflowFromFile(workflowname);
-                Console.WriteLine("****************************\n Building Report for:  " + args[1] + "\n");
+                configLoader.setFilenames(args[0], args[1]);
+                Config config = configLoader.loadWorkflowFromFile(workflowname);
 
-                issueTimeReport = issueStatusTimesReportBuilder.BuildReport(config);
+                issueTimeReport = issueStatusTimesReportBuilder.buildReport(config);
                 cFDReport = cFDReportBuilder.BuildReport(config);
 
-                fileExporter.ExportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
-                fileExporter.ExportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
+                fileExporter.exportToFile(issueTimeReport.ToString(), config.ExportFileName + "_IssueTimes");
+                fileExporter.exportToFile(issueTimeReport.StatusTransitionList, config.ExportFileName + "_Transitions");
+                fileExporter.exportToFile(cFDReport.ToString(), config.ExportFileName + "_CFD");
 
             }
 

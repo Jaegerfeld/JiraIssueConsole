@@ -15,40 +15,40 @@ namespace IssueColl.Report
         IssueTimesReport report;
         Config config;
         List<string> doneStatesList = new List<string>();
-        List<string> notFoundStep = new List<string>();
+        List<String> notFoundStep = new List<String>();
+       
 
         internal Config Config { get => config; set => config = value; }
         internal IssueTimesReport Report { get => report; set => report = value; }
-        public List<string> NotFoundStep { get => notFoundStep; set => notFoundStep = value; }
-        public List<string> DoneStatesList { get => doneStatesList; set => doneStatesList = value; }
 
-        internal IssueTimesReport BuildReport(Config config)
+        internal IssueTimesReport buildReport(Config config)
         {
             this.Config = config;
-            Console.WriteLine("Building Issue Times  Report...  ");
+
 
             string path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.JsonFileName;
 
             // load json File
-            IssueTimesReport report = new IssueTimesReport();
+            //IssueTimesReport//
+            report = new IssueTimesReport();
             string jsonString = File.ReadAllText(path);
             IssuesPOCO JsonContent = JsonConvert.DeserializeObject<IssuesPOCO>(jsonString);
 
 
-            report.HeaderLine = this.BuildHeader();
+            report.HeaderLine = this.buildHeader();
 
 
             // every issue is a seperate line in the report csv
             foreach (IssuePOCO issue in JsonContent.issues)
             {
-                report.IssueLines.Add(this.BuildLine(issue));
+                report.IssueLines.Add(this.buildLine(issue));
             }
 
-            if (NotFoundStep.Count > 0)
+            if (notFoundStep.Count > 0)
             {
-                Console.WriteLine("********Warnings**************\n !!!Found Steps not in Workflow File:\n !!! \n ******************************");
+                Console.WriteLine("********Warnings*********\nFound Steps not in Workflow File:\n");
             }
-            foreach(string step in NotFoundStep)
+            foreach(string step in notFoundStep)
             {
                 Console.WriteLine(step);
             }
@@ -59,7 +59,7 @@ namespace IssueColl.Report
 
         /* The header of the report csv has an constant and an flex part.
        Every issue has a group (parent issue), Key, Type, Status, Created Date, Component (maybe EMPTY or NULL), resolution (maybe EMPTY or NULL), */
-        private string BuildHeader()
+        private string buildHeader()
         {
             string header = "";
 
@@ -77,10 +77,9 @@ namespace IssueColl.Report
                 header += status.Name + ",";
                 if (status.DoneState)
                 {
-                    DoneStatesList.Add(status.Name);
+                    doneStatesList.Add(status.Name);
                 }
             }
-
             header += "Resolution";
 
             //header += System.Environment.NewLine; // finish header
@@ -88,14 +87,14 @@ namespace IssueColl.Report
 
         }
 
-        private IssueTimesReportLine BuildLine(IssuePOCO issue)
+        private IssueTimesReportLine buildLine(IssuePOCO issue)
         {
 
             string lastName = "";
             string firstName = "";
             string implName = "";
             //bool foundDate = false;
-            
+
 
             //Basisc load, without logic total clear data
             IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow.WorkflowSteps);
@@ -105,13 +104,7 @@ namespace IssueColl.Report
             {
                 foreach (IssueComponentsItemPOCO item in issue.fields.components)
                 {
-                    string cName = item.name;
-                    if (cName.Contains(","))
-                    {
-                        cName = cName.Replace(',', ' ');
-                    }
-                    
-                    resultLine.Component.Add(cName);
+                    resultLine.Component.Add(item.name);
                 }
             }
             if (issue.fields.project != null)
@@ -120,15 +113,17 @@ namespace IssueColl.Report
                 if (pName.Contains(","))
                 {
                     pName = pName.Replace(',', ' ');
-                } 
-                    resultLine.Project = pName;
+                }
+                resultLine.Project = pName;
             }
+
             // resolution could be Empty or even NULL(depends on jira version) if the issue is not done
             if (issue.fields.resolution != null)
             {
                 resultLine.Resolution = issue.fields.resolution.name;
             }
 
+            // Herausfinden ob das Issue schon begonnen (In Anlysis i.A. ) oder angefangen (completed i.A.) wurde
             Dictionary<string, int> dict = new Dictionary<string, int>();
             foreach (WorkflowStep status in this.config.Workflow.WorkflowSteps)
             {
@@ -148,6 +143,8 @@ namespace IssueColl.Report
             }
 
             List<StatusRich> statusRichList = new List<StatusRich>();
+            // Alle History einträge im changelog durchlaufen und wenn Eintrag ein Status ist
+            // status der richlist hinzufügen
 
             Boolean implNotReached = true;
 
@@ -157,21 +154,30 @@ namespace IssueColl.Report
                 {
                     if (item.FieldName.Equals("status"))
                     {
-                        WorkflowStep wstep = new WorkflowStep();
-                        wstep = config.Workflow.WorkflowSteps.Find(Status => Status.Name.Equals(item.ToValue));
-                        if(wstep == null)
+                        StatusRich statusTransformation = null;
+                        WorkflowStep step =  Config.Workflow.getStepbyName(item.ToValue);
+                        if (step == null) 
                         {
-                            wstep = this.config.Workflow.GetAlias(item.ToValue);
-                            
+                            Console.WriteLine("not found step");
+                            continue;
                         }
-                        if (wstep == null) break;
-                        StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()), wstep);
+                        try
+                        {
+                             statusTransformation = new StatusRich(step.Name, DateTime.Parse(history.created.ToString()));
+                        }
+                        catch (Exception)
+                        {
 
-                        statusRichList.Add(statusTransformation);
-
+                            throw;
+                        }
+                        //StatusRich statusTransformation = new StatusRich(item.ToValue, DateTime.Parse(history.created.ToString()));
+                        if (statusTransformation != null)
+                        {
+                            statusRichList.Add(statusTransformation);
+                        }
                         if (implNotReached)
                         {
-                            if (wstep.Impl) 
+                            if (step.Impl)
                             {
 
                                 resultLine.ImplDate = DateTime.Parse(history.created.ToString());
@@ -181,19 +187,18 @@ namespace IssueColl.Report
                     }
                 }
             }
-           // WorkflowStep funnelStep = statusRichList.First().Step;
 
-           
-            // korrektur Funnel Time (erster Status wird nicht durch Transition sondertn create gemeldet
-
-
-            //DateTime CloseDate = new DateTime();
-            //DateTime FirstDate = new DateTime();
-            //DateTime DoneDate = new DateTime();
 
             // umsortieren letzter zuerst, desc
             statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
 
+           
+
+            foreach (StatusRich transStatus in statusRichList)
+            {
+                this.report.StatusTransitionList += "\n" + issue.key + ";" + transStatus.Name + ";" + transStatus.TimeStamp;
+            }
+           
             DateTime currentDate = this.config.ReportDate;
             // kein Statuswechsel in History ==> immer noch im initialen Status
             if (statusRichList.Count < 1)
@@ -205,82 +210,119 @@ namespace IssueColl.Report
 
                 resultLine.IdleIssue = true;
                 resultLine.Idletime = minutes;
-                if(config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
+
+
+                //if (issue.fields.status.name.equals(config.workflow.veryfirststep.name))
+                //{
+                //    resultline.firstdate = resultline.createddate;
+                //}
+                if (config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
                 {
                     resultLine.FirstDate = resultLine.CreatedDate;
+                    
                 }
-                
             }
             // sonst Status gefunden, wenn  nicht: immer noch open
             else
             {
                 DateTime last;
-                resultLine.FirstDate = statusRichList.Last().TimeStamp;
+
                 // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                
-                // Case 1: <LAST> State found
                 //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
                 if (statusRichList.Any(p => p.Name.Equals(lastName)))
                 {
-                    //resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                  //  Console.WriteLine(issue.key);
-                   StatusRich  doneState = GetFirstDone(statusRichList);
-                   resultLine.ClosedDate = doneState.TimeStamp;
-                }
-           
-                else // Case 2: Handling not passed <LAST> but already Done &  Case 3: deprecated States
-                {
-                    foreach (StatusRich statusRich in statusRichList)
-                    {
-                        List<DateTime> timestamps = new List<DateTime>();
-                        // if the current step is a deprecated status find the alias
-                        if (statusRich.Step == null)
-                        { 
-                            WorkflowStep alias = new WorkflowStep();
-                            foreach (WorkflowStep step in config.Workflow.WorkflowSteps)
-                            {
-                                if (step.Aliases.Contains(statusRich.Name))
-                                {
-                                    alias = step;
-                                }
-                            }
-                            if (alias.DoneState)
-                            {
-                                timestamps.Add(statusRich.TimeStamp);                                                              
-                            }
+                    StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(lastName)));
+                    //resultLine.ClosedDate = treffer.TimeStamp;
+                    // resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
 
-                            if(timestamps.Count > 0)
-                            {
-                                 resultLine.ClosedDate = timestamps.Min(obj => obj);
-                            }
-                        }
-                        // if there is a done state, mark that timestamp
-                        else if (statusRich.Step.DoneState)
+
+                    StatusRich t2 = new StatusRich();
+                    StatusRich t3 = new StatusRich();
+                    Boolean closednotset = true;
+
+                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                    if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
+                        if (statusRichList.Any(p => p.Name.Equals(lastName)))
                         {
-                            resultLine.ClosedDate = statusRich.TimeStamp;
+                            resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
                         }
+
+                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
+                    if (statusRichList.Any(p => p.Name == "Done") && !statusRichList.Any(p => p.Name.Equals(lastName)))
+                    {
+                        resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
                     }
 
-                }
 
-
-                if (statusRichList.Any(p => p.Name.Equals(firstName)))
-                {
-                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
-                }
-
+                    List<StatusRich> RealstatusRichList = new List<StatusRich>();
+                    foreach (StatusRich transStatus in statusRichList)
+                    {
+                        if (doneStatesList.Contains(transStatus.Name))
+                        {
+                            if (transStatus.Name.Equals(t2.Name))
+                            {
+                                // allererster gefundener DoneState 
                                 
+                                t2.Name = transStatus.Name;
+                                resultLine.ClosedDate = transStatus.TimeStamp;
+                                continue;
+                            }
+                            t2.Name = transStatus.Name;
+                            resultLine.ClosedDate = transStatus.TimeStamp;
+                            if (closednotset)
+                            {
+                                resultLine.ClosedDate = transStatus.TimeStamp;
+                                closednotset = false;
+                            }
+                        }
+
+                        
+                    }
+                        
+                   // DateTime realdate = 
+
+
+                }
+
+
+
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
                 {
-                    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                    StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(firstName)));
+                    resultLine.FirstDate = treffer.TimeStamp;
+                    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
-                else if(statusRichList.Count <1 || config.Workflow.FirstStatus.Equals( config.Workflow.VeryFirstStep))
+                if ( ((!(statusRichList.Any(p => p.Name.Equals(firstName)))) || ((statusRichList.Count < 1))) )
                 {
-                    resultLine.FirstDate = resultLine.CreatedDate;
+                    StatusRich treffer = statusRichList.ElementAt(0);
+                    if (!(treffer.Name.Equals(config.Workflow.VeryFirstStep.Name)))
+                    {
+                        resultLine.FirstDate = treffer.TimeStamp;
+                    }
+                    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
+                if (statusRichList.Count < 1 || config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
+                {
+                    //resultLine.FirstDate = null;
+                }
+                //if )
+                //{
+                //    StatusRich treffer = statusRichList.ElementAt(0);
+                //    resultLine.FirstDate = treffer.TimeStamp;
+                //}
 
-                // letzter Zeitpunkt: Erstelldatum des Datenabzugs (aka "wann ist heute?")                                                
+
+
+
+                //if (statusRichList.Any(p => p.Name.Equals(firstName)))
+                //{
+                //    resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                //}
+                //else
+
+
+                // Erster Zeitpunkt: Erstelldatum des Datenabzugs (aka "heute")                                                
                 last = currentDate;
                 DateTime firstTrans = new DateTime();
                 // Dauer eines statusverbleibs: Startdate des nachfolgers - Startdate des betrachteten Status
@@ -305,7 +347,7 @@ namespace IssueColl.Report
                     {
                         statusName = statusTrans.Name;
                     }
-                    if (DoneStatesList.Contains(statusName))
+                    if (doneStatesList.Contains(statusName))
                     {
                         resultLine.DoneDate = statusTrans.TimeStamp;
                         resultLine.FoundDate = true;
@@ -313,9 +355,9 @@ namespace IssueColl.Report
                     if (!dict.ContainsKey(statusName))
                     {
                         dict.Add(statusName, 0);
-                        if (!NotFoundStep.Contains(statusName)) 
+                        if (!notFoundStep.Contains(statusName)) 
                         {
-                            NotFoundStep.Add(statusName);
+                            notFoundStep.Add(statusName);
                         }
                     }
                     dict[statusName] += statusTrans.Minutes;
@@ -325,6 +367,7 @@ namespace IssueColl.Report
                 // add time for initial Status
                 int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
                 WorkflowStep first = config.Workflow.VeryFirstStep;
+                //WorkflowStep first = config.Workflow.FirstStatus;
                 dict[first.Name] += firstTime;
 
 
@@ -337,28 +380,6 @@ namespace IssueColl.Report
 
 
             return resultLine;
-        }
-
-        public StatusRich GetFirstDone(List<StatusRich> statusrichlist)
-        {
-            StatusRich returnStatus = new StatusRich();
-
-            foreach(StatusRich status in statusrichlist)
-            {
-
-                if (status.Step == null)
-                {
-                   WorkflowStep step = this.config.Workflow.GetAlias(status.Name);
-                   
-                   
-                }
-                if (status.Step.DoneState)
-                {
-                    return status;
-                }
-            }
-
-            return returnStatus;
         }
     }
 

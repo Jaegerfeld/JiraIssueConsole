@@ -19,8 +19,8 @@ namespace IssueColl.Report
         string resolution;
         Dictionary<string, int> statusTimes;
         DateTime firstDate;
-        DateTime implDate;
         DateTime closedDate;
+        DateTime implDate;
         DateTime doneDate;
         bool idleIssue = false;
         int idletime = 0;
@@ -38,13 +38,13 @@ namespace IssueColl.Report
         public string Resolution { get => resolution; set => resolution = value; }
         public Dictionary<string, int> StatusTimes { get => statusTimes; set => statusTimes = value; }
         public DateTime FirstDate { get => firstDate; set => firstDate = value; }
-        public DateTime ImplDate { get => implDate; set => implDate = value; }
         public DateTime ClosedDate { get => closedDate; set => closedDate = value; }
         public bool IdleIssue { get => idleIssue; set => idleIssue = value; }
         public int Idletime { get => idletime; set => idletime = value; }
         public bool FoundDate { get => foundDate; set => foundDate = value; }
         public DateTime DoneDate { get => doneDate; set => doneDate = value; }
         public List<string> NotFoundStep { get => notFoundStep; set => notFoundStep = value; }
+        public DateTime ImplDate { get => implDate; set => implDate = value; }
         public string Category { get => category; set => category = value; }
         public string Project { get => project; set => project = value; }
 
@@ -61,17 +61,11 @@ namespace IssueColl.Report
             this.createdDate = issue.fields.created;
             this.component = new List<string>();
             this.statusTimes = new Dictionary<string, int>();
-            if (issue.fields.customfield_11404 != null)
-            {
-                this.category = issue.fields.customfield_11404[0].value;
-            }
-            else this.category = "";
 
             foreach (WorkflowStep step in workflow)
             {
                 this.statusTimes.Add(step.Name, 0);
             }
-            int a = 0;
 
         }
 
@@ -82,33 +76,33 @@ namespace IssueColl.Report
 
             returnstring += this.project + sep + this.group + sep + this.key + sep + this.issuetype + sep + this.status + sep + this.createdDate + sep;
 
-            
             foreach (string item in this.component)
             {
-                returnstring += item + "|";
+                string component  = item.Replace(",", "");
+                returnstring += component + "|";
             }
-
-            returnstring += sep;
-
-            returnstring += this.category;
-
-            returnstring += sep;
-
+            returnstring += sep + this.resolution + sep;
             if (this.idleIssue)
             {
-                
-                if(this.firstDate != null && !this.firstDate.Equals(new System.DateTime())) 
+
+                if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
                 {
-                    returnstring += this.firstDate + sep + sep + sep;
+                    returnstring += "" + sep + sep +sep;
                 }
                 else 
                 {
-                    returnstring += sep + sep + sep;
+                    returnstring += sep + sep;
                 }
-                returnstring += this.idletime + sep + sep;
-              
+
+                //if ((this.FirstDate == null) || FirstDate.Equals(new System.DateTime()))
+                //{
+                //    returnstring += sep + sep;
+                //    //returnstring += ",";
+                //}
+
+
                 // cause the idle time is the only time we counted, rest are zero by definition
-                for(int i = 0; i < (this.statusTimes.Count - 2); i++)
+                for (int i = 0; i < (this.statusTimes.Count - 1); i++)
                 {
                     returnstring += "0" + sep;
                 }
@@ -124,8 +118,7 @@ namespace IssueColl.Report
                 {
                     returnstring += FirstDate.ToString() + ",";
                 }
-
-
+                
                 if ((this.ImplDate == null) || ImplDate.Equals(new System.DateTime()))
                 {
                     returnstring += ",";
@@ -134,8 +127,6 @@ namespace IssueColl.Report
                 {
                     returnstring += ImplDate.ToString() + ",";
                 }
-
-
                 if ((this.ClosedDate == null) || this.ClosedDate.Equals(new System.DateTime()))
                 {
                     if (idleIssue)
@@ -154,9 +145,7 @@ namespace IssueColl.Report
                     returnstring += pair.Value + ",";
                 }
 
-
-                returnstring +=  this.resolution;
-
+                returnstring += this.resolution;
 
             }            
             
