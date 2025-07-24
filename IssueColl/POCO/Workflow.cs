@@ -12,14 +12,16 @@ namespace IssueColl.POCO
         WorkflowStep lastStatus;
         WorkflowStep veryFirstStep;
         WorkflowStep implStatus;
+        List<string> doneWorkflowsteps;
         public WorkflowStep VeryFirstStep { get => veryFirstStep; set => veryFirstStep = value; }
 
-        public Workflow() { }
+        public Workflow() { doneWorkflowsteps = []; }
 
         public WorkflowStep FirstStatus { get => firstStatus; set => firstStatus = value; }
         public WorkflowStep LastStatus { get => lastStatus; set => lastStatus = value; }
         internal List<WorkflowStep> WorkflowSteps { get => workflowsteps; set => workflowsteps = value; }
         internal WorkflowStep ImplStatus { get => implStatus; set => implStatus = value; }
+        internal List<string> DoneWorkflowsteps { get => doneWorkflowsteps; set => doneWorkflowsteps = value; }
 
         public WorkflowStep getStepbyName(string name)
         {

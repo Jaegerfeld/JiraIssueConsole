@@ -139,6 +139,14 @@ namespace Jiracoll
             file.Close();
             returnWorkflow.WorkflowSteps = steps;
 
+            foreach (WorkflowStep step in steps)
+            {
+                if ((step.DoneState == true))
+                {
+                    returnWorkflow.DoneWorkflowsteps.Add(step.Name);
+                }
+            }
+                
             this.currentWorkflow = returnWorkflow;
 
             return this.CurrentWorkflow;

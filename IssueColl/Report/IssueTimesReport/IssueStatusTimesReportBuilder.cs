@@ -192,8 +192,7 @@ namespace IssueColl.Report
             // umsortieren letzter zuerst, desc
             statusRichList.Sort((x, y) => y.TimeStamp.CompareTo(x.TimeStamp));
 
-           
-
+            // Transitionen einzeln merkken für export
             foreach (StatusRich transStatus in statusRichList)
             {
                 this.report.StatusTransitionList += "\n" + issue.key + ";" + transStatus.Name + ";" + transStatus.TimeStamp;
@@ -211,11 +210,6 @@ namespace IssueColl.Report
                 resultLine.IdleIssue = true;
                 resultLine.Idletime = minutes;
 
-
-                //if (issue.fields.status.name.equals(config.workflow.veryfirststep.name))
-                //{
-                //    resultline.firstdate = resultline.createddate;
-                //}
                 if (config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
                 {
                     resultLine.FirstDate = resultLine.CreatedDate;
@@ -224,67 +218,29 @@ namespace IssueColl.Report
             }
             // sonst Status gefunden, wenn  nicht: immer noch open
             else
+            
             {
                 DateTime last;
 
-                // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                //if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                if (statusRichList.Any(p => p.Name.Equals(lastName)))
+                // wenn es einen Donestatus: suche den echten Donestate .
+                // Solange zeitlich rückwärts immer nur donestates kommen, ist es der letzte, sonst gibt es noch kein donedate
+
+                if (statusRichList.Any(p => config.Workflow.DoneWorkflowsteps.Contains(p.Name)))
                 {
-                    StatusRich treffer = (statusRichList.Find(p => p.Name.Equals(lastName)));
-                    //resultLine.ClosedDate = treffer.TimeStamp;
-                    // resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-
-
-                    StatusRich t2 = new StatusRich();
-                    StatusRich t3 = new StatusRich();
-                    Boolean closednotset = true;
-
-                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                    if (statusRichList.Any(p => p.Name == "Done") || statusRichList.Any(p => p.Name == "Abgebrochen"))
-                        if (statusRichList.Any(p => p.Name.Equals(lastName)))
-                        {
-                            resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                        }
-
-                    // wenn es einen Donestatus gibt ist der letzte das Ende Date
-                    if (statusRichList.Any(p => p.Name == "Done") && !statusRichList.Any(p => p.Name.Equals(lastName)))
+                    foreach (StatusRich richStatus in statusRichList)
                     {
-                        resultLine.ClosedDate = statusRichList.Max(obj => obj.TimeStamp);
-                    }
-
-
-                    List<StatusRich> RealstatusRichList = new List<StatusRich>();
-                    foreach (StatusRich transStatus in statusRichList)
-                    {
-                        if (doneStatesList.Contains(transStatus.Name))
+                        WorkflowStep currentStep = config.Workflow.WorkflowSteps.Find(p => p.Name == richStatus.Name);
+                        if (!currentStep.DoneState)
                         {
-                            if (transStatus.Name.Equals(t2.Name))
-                            {
-                                // allererster gefundener DoneState 
-                                
-                                t2.Name = transStatus.Name;
-                                resultLine.ClosedDate = transStatus.TimeStamp;
-                                continue;
-                            }
-                            t2.Name = transStatus.Name;
-                            resultLine.ClosedDate = transStatus.TimeStamp;
-                            if (closednotset)
-                            {
-                                resultLine.ClosedDate = transStatus.TimeStamp;
-                                closednotset = false;
-                            }
+                            break;
                         }
-
-                        
+                        else
+                        {
+                            resultLine.ClosedDate = richStatus.TimeStamp;
+                        }
                     }
-                        
-                   // DateTime realdate = 
-
 
                 }
-
-
 
 
                 if (statusRichList.Any(p => p.Name.Equals(firstName)))
@@ -293,15 +249,22 @@ namespace IssueColl.Report
                     resultLine.FirstDate = treffer.TimeStamp;
                     //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
                 }
-                if ( ((!(statusRichList.Any(p => p.Name.Equals(firstName)))) || ((statusRichList.Count < 1))) )
+                else if (statusRichList.Count >0) //if(statusRichList.Any(p => config.Workflow.DoneWorkflowsteps.Contains(p.Name)) brauchen wir gar nicht, wenn kein first, áber statusrichlist >0 dann erster.
                 {
-                    StatusRich treffer = statusRichList.ElementAt(0);
-                    if (!(treffer.Name.Equals(config.Workflow.VeryFirstStep.Name)))
-                    {
-                        resultLine.FirstDate = treffer.TimeStamp;
-                    }
-                    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                    StatusRich treffer = statusRichList.Last();
+                    resultLine.FirstDate = treffer.TimeStamp;
                 }
+
+
+                //if ( ((((statusRichList.Count < 1))) )
+                //{
+                //    StatusRich treffer = statusRichList.ElementAt(0);
+                //    if (!(treffer.Name.Equals(config.Workflow.VeryFirstStep.Name)))
+                //    {
+                //        resultLine.FirstDate = treffer.TimeStamp;
+                //    }
+                //    //resultLine.FirstDate = statusRichList.Min(obj => obj.TimeStamp);
+                
                 if (statusRichList.Count < 1 || config.Workflow.FirstStatus.Equals(config.Workflow.VeryFirstStep))
                 {
                     //resultLine.FirstDate = null;
@@ -354,7 +317,6 @@ namespace IssueColl.Report
                 // add time for initial Status
                 int firstTime = (int) (firstTrans - resultLine.CreatedDate).TotalMinutes;
                 WorkflowStep first = config.Workflow.VeryFirstStep;
-                //WorkflowStep first = config.Workflow.FirstStatus;
                 dict[first.Name] += firstTime;
 
 
