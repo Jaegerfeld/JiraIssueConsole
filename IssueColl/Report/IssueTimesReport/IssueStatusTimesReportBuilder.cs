@@ -96,6 +96,7 @@ namespace IssueColl.Report
             //bool foundDate = false;
 
 
+            this.report.StatusTransitionList += "\n" + issue.key + ";" + "Created" + ";" + issue.fields.created;
             //Basisc load, without logic total clear data
             IssueTimesReportLine resultLine = new IssueTimesReportLine(issue, config.Workflow.WorkflowSteps);
 
